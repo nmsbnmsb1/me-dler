@@ -13,11 +13,12 @@ export function getProxyAgent(proxy: string) {
 		return { httpsAgent: new https.Agent({ rejectUnauthorized: false }) };
 	}
 	//
-	let options = { ...url.parse(proxy), agentOptions: { keepAlive: true, rejectUnauthorized: false } };
+	//let options = { ...url.parse(proxy), agentOptions: { keepAlive: true, rejectUnauthorized: false } };
+	let options = { keepAlive: true, rejectUnauthorized: false };
 	if (proxy.startsWith('socks')) {
-		return { httpAgent: new SocksProxyAgent(options), httpsAgent: new SocksProxyAgent(options) };
+		return { httpAgent: new SocksProxyAgent(proxy, options), httpsAgent: new SocksProxyAgent(proxy, options) };
 	}
-	return { httpAgent: new HttpProxyAgent(options), httpsAgent: new HttpsProxyAgent(options) };
+	return { httpAgent: new HttpProxyAgent(proxy, options), httpsAgent: new HttpsProxyAgent(proxy, options) };
 	// return {
 	// 	httpAgent: new http.Agent({ keepAlive: false }),
 	// 	httpsAgent: new https.Agent({ keepAlive: false, rejectUnauthorized: false }),

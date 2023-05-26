@@ -18,29 +18,33 @@ export class Downloader extends RunOne {
 	}
 
 	protected async doStart(context: IDLContext) {
-		let { dl } = context;
-		//
-		if (fs.existsSync(dl.file)) return;
-		//初始化
+		//查看文件是否已下载
+		if (fs.existsSync(context.file)) {
+			return;
+		}
+		//初始化context
 		{
-			dl.mtdfile = `${dl.file}.mtd`;
-			if (dl.mkdir !== false) dl.mkdir = true;
+			if (context.mkdir !== false) context.mkdir = true;
+			if (context.overwrite !== true) context.overwrite = false;
+			if (!context.mtdfile) context.mtdfile = `${context.file}.mtd`;
 			//
-			if (!dl.timeout) dl.timeout = 5000;
-			if (!dl.method) dl.method = 'GET';
-			if (!dl.headers) dl.headers = {};
-			if (!dl.threads) dl.threads = 3;
-			if (!dl.oneThreadSize) dl.oneThreadSize = 500 * 1024;
-			if (!dl.range) dl.range = '0-100';
-			if (!dl.metaSize) dl.metaSize = 10 * 1024;
+			if (!context.proxy) context.proxy = 'http://127.0.0.1:1087';
+			if (!context.timeout) context.timeout = 5000;
+			if (!context.method) context.method = 'GET';
+			if (!context.headers) context.headers = {};
+			if (!context.threads) context.threads = 3;
+			if (!context.noThreadsSize) context.noThreadsSize = 500 * 1024;
+			if (!context.range) context.range = '0-100';
+			if (!context.metaSize) context.metaSize = 10 * 1024;
 			//
-			dl.results = {} as any;
+			context.runtime = {} as any;
 		}
 		//
 		let mode = 1;
-		if (fs.existsSync(dl.mtdfile)) {
-			if (dl.overwrite) fs.rmSync(dl.mtdfile);
-			else {
+		if (fs.existsSync(context.mtdfile)) {
+			if (context.overwrite) {
+				fs.rmSync(context.mtdfile);
+			} else {
 				mode = 2;
 			}
 		}

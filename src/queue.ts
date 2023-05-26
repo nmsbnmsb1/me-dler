@@ -2,30 +2,30 @@ import { ErrHandler, RunQueue } from 'me-actions';
 import { IDLContext } from './context';
 import { Downloader } from './downloader';
 
-export class Queue extends RunQueue {
-	private static _instance: Queue;
+export class DLQueue extends RunQueue {
+	private static _instance: DLQueue;
 
 	public static getInstance() {
-		if (!Queue._instance) {
-			Queue._instance = new Queue(5, RunQueue.StopHandlerManual, ErrHandler.Ignore).start();
+		if (!DLQueue._instance) {
+			DLQueue._instance = new DLQueue(5, RunQueue.StopHandlerManual, ErrHandler.Ignore).start();
 		}
-		return Queue._instance;
+		return DLQueue._instance;
 	}
 
 	public static addOne(context: IDLContext) {
 		let dl = new Downloader(context);
-		Queue.getInstance().addChild(dl);
+		DLQueue.getInstance().addChild(dl);
 		return dl;
 	}
-	public static async doDownloadOne(context: IDLContext) {
-		return Queue.getInstance().doOne(new Downloader(context));
+	public static async doOne(context: IDLContext) {
+		return DLQueue.getInstance().doOne(new Downloader(context));
 	}
-	public static stopDownloadOne(dl: Downloader) {
-		Queue.getInstance().stopOne(dl);
+	public static stopOne(dl: Downloader) {
+		DLQueue.getInstance().stopOne(dl);
 	}
 
 	public static batchDownload(ctxs: IDLContext[]) {
-		let instance = Queue.getInstance();
+		let instance = DLQueue.getInstance();
 		let dls = [];
 		for (let ctx of ctxs) {
 			let dl = new Downloader(ctx);
@@ -35,7 +35,7 @@ export class Queue extends RunQueue {
 		return dls;
 	}
 	public static async doBatch(ctxs: IDLContext[], errHandler: number = ErrHandler.Ignore) {
-		let instance = Queue.getInstance();
+		let instance = DLQueue.getInstance();
 		let all = [];
 		for (let ctx of ctxs) all.push(instance.doOne(new Downloader(ctx)));
 		//
@@ -47,7 +47,7 @@ export class Queue extends RunQueue {
 		}
 	}
 	public static stopBatch(dls: Downloader[]) {
-		let instance = Queue.getInstance();
+		let instance = DLQueue.getInstance();
 		for (let dl of dls) {
 			instance.stopOne(dl);
 		}

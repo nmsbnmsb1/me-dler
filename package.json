@@ -1,6 +1,6 @@
 {
 	"name": "me-dler",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"main": "lib/index.js",
 	"exports": {
 		".": {
@@ -15,18 +15,18 @@
 	},
 	"dependencies": {
 		"async": "^3.2.4",
-		"axios": "^1.3.4",
+		"axios": "^1.4.0",
 		"underscore": "^1.13.6",
 		"me-actions": "https://github.com/nmsbnmsb1/me-actions.git",
-		"http-proxy-agent": "^5.0.0",
-		"https-proxy-agent": "^5.0.1",
-		"socks-proxy-agent": "^7.0.0"
+		"http-proxy-agent": "^6.1.0",
+		"https-proxy-agent": "^6.2.0",
+		"socks-proxy-agent": "^8.0.1"
 	},
 	"devDependencies": {
-		"@types/async": "^3.2.18",
-		"@types/node": "^18.14.1",
+		"@types/async": "^3.2.20",
+		"@types/node": "^20.2.3",
 		"@types/underscore": "^1.11.4",
-		"prettier": "^2.8.4",
-		"typescript": "^4.9.5"
+		"prettier": "^2.8.8",
+		"typescript": "^5.0.4"
 	}
 }

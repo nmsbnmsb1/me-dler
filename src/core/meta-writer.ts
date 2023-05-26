@@ -2,22 +2,23 @@ import fs from 'fs';
 import { Action } from 'me-actions';
 import { IDLContext } from '../context';
 
-export function writeMeta({ dl }: IDLContext) {
-	let { results } = dl;
+export function writeMeta(context: IDLContext) {
+	let { runtime } = context;
+	//
 	try {
 		let meta = {
-			fileSize: results.fileSize,
-			url: results.url,
-			//headers: results.headers,
-			threads: results.threads,
+			fileSize: runtime.fileSize,
+			url: runtime.url,
+			//headers: runtime.headers,
+			threads: runtime.threads,
 		};
 		//
-		let buffer = Buffer.alloc(dl.metaSize);
+		let buffer = Buffer.alloc(context.metaSize);
 		buffer.fill(' ');
 		let dataString = JSON.stringify(meta);
 		buffer.write(dataString);
-		let writePosition = results.fileSize;
-		fs.writeSync(results.fd, buffer, 0, buffer.length, writePosition);
+		let writePosition = runtime.fileSize;
+		fs.writeSync(runtime.fileDescriptor, buffer, 0, buffer.length, writePosition);
 		//
 	} catch (err) {
 		throw err;

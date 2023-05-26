@@ -60,7 +60,7 @@ let codes = {
 	},
 };
 
-export default function (code: number, ...cs: any) {
+export function e(code: number, ...cs: any) {
 	let item = codes[code];
 	let message = item.message;
 

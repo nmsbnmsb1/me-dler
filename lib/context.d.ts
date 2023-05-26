@@ -5,28 +5,26 @@ export interface IThread {
     position: number;
 }
 export interface IDLContext extends IContext {
-    dl: {
+    url: string;
+    file: string;
+    mkdir?: boolean;
+    overwrite?: boolean;
+    mtdfile?: string;
+    proxy?: string;
+    timeout?: number;
+    method?: string;
+    headers?: {
+        [name: string]: any;
+    };
+    threads?: number;
+    noThreadsSize?: number;
+    range?: string;
+    metaSize?: number;
+    runtime?: {
+        fileDescriptor: number;
+        fileSize: number;
+        acceptRanges: boolean;
         url: string;
-        file: string;
-        mtdfile?: string;
-        overwrite?: boolean;
-        mkdir?: boolean;
-        proxy?: string;
-        timeout?: number;
-        method?: string;
-        headers?: {
-            [name: string]: any;
-        };
-        threads?: number;
-        oneThreadSize?: number;
-        range?: string;
-        metaSize?: number;
-        results?: {
-            fd: number;
-            fileSize: number;
-            acceptRanges: boolean;
-            url: string;
-            threads: IThread[];
-        };
+        threads: IThread[];
     };
 }

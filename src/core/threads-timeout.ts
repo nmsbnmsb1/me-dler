@@ -1,26 +1,28 @@
 import { Action } from 'me-actions';
 import { IDLContext } from '../context';
-import e from '../errs';
+import { e } from '../utils';
 
 export default class extends Action {
 	private timer: any;
 
-	protected async doStart({ dl }: IDLContext) {
-		let { results } = dl;
+	protected async doStart(context: IDLContext) {
+		let { runtime } = context;
 		let totalBytesDownloaded = 0;
+		//
 		this.timer = setInterval(() => {
 			let bytesDownloaded = 0;
-			for (let thread of results.threads) bytesDownloaded += thread.position - thread.start;
+			for (let thread of runtime.threads) bytesDownloaded += thread.position - thread.start;
 			if (bytesDownloaded > totalBytesDownloaded) {
 				// All is well
 				totalBytesDownloaded = bytesDownloaded;
 				//
 			} else {
+				//context.timeout 没有收到数据
 				clearInterval(this.timer);
 				this.timer = undefined;
-				this.getRP().reject(e(1001, dl.timeout));
+				this.getRP().reject(e(1001, context.timeout));
 			}
-		}, dl.timeout);
+		}, context.timeout);
 		//
 		await this.getRP().p;
 	}

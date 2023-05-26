@@ -8,14 +8,12 @@ export default class extends Action {
 	private request: RunAll;
 
 	protected async doStart(context: IDLContext) {
-		let { dl } = context;
-		//
 		this.timeout = new ThreadsTimeout().start(context).watch((a: Action) => {
 			if (a.isRejected()) this.getRP().reject(a.getError());
 		});
 		//
 		this.request = new RunAll(ErrHandler.RejectAllDone);
-		for (let thread of dl.results.threads) {
+		for (let thread of context.runtime.threads) {
 			if (thread.position < thread.end) this.request.addChild(new ThreadsRequest(thread));
 		}
 		this.request.start(context).watch((a: Action) => {

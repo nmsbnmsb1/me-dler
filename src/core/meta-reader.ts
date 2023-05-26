@@ -3,21 +3,21 @@ import { Action } from 'me-actions';
 import { IDLContext } from '../context';
 
 export default class extends Action {
-	protected async doStart({ dl }: IDLContext) {
-		let { results } = dl;
+	protected async doStart(context: IDLContext) {
+		let { runtime } = context;
 		try {
-			let stats = fs.fstatSync(results.fd);
+			let stats = fs.fstatSync(runtime.fileDescriptor);
 			let actualSize = stats.size;
-			let readPostion = actualSize - dl.metaSize;
-			let buffer = Buffer.alloc(dl.metaSize);
-			fs.readSync(results.fd, buffer, 0, buffer.length, readPostion);
+			let readPostion = actualSize - context.metaSize;
+			let buffer = Buffer.alloc(context.metaSize);
+			fs.readSync(runtime.fileDescriptor, buffer, 0, buffer.length, readPostion);
 			//
 			let meta = JSON.parse(buffer.toString());
-			results.fileSize = meta.fileSize;
-			results.url = meta.url;
-			//results.url_object = url.parse(meta.url);
-			//results.headers = meta.headers;
-			results.threads = meta.threads;
+			runtime.fileSize = meta.fileSize;
+			runtime.url = meta.url;
+			//runtime.url_object = url.parse(meta.url);
+			//runtime.headers = meta.headers;
+			runtime.threads = meta.threads;
 			//
 		} catch (err) {
 			throw err;

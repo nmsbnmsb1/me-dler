@@ -1,5 +1,7 @@
 /// <reference types="node" />
 import https from 'https';
+import { HttpProxyAgent } from 'http-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { AxiosResponse } from 'axios';
 export declare function getProxyAgent(proxy: string): {
@@ -9,8 +11,8 @@ export declare function getProxyAgent(proxy: string): {
     httpAgent: SocksProxyAgent;
     httpsAgent: SocksProxyAgent;
 } | {
-    httpAgent: import("http-proxy-agent/dist/agent").default;
-    httpsAgent: import("https-proxy-agent/dist/agent").default;
+    httpAgent: HttpProxyAgent<string>;
+    httpsAgent: HttpsProxyAgent<string>;
 };
 export declare function request(options: {
     method?: string;
