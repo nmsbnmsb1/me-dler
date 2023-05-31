@@ -18,7 +18,9 @@ export default class extends Action {
 		} else {
 			let runAll = new RunAll(ErrHandler.RejectAllDone);
 			for (let thread of metaData.threads) {
-				if (thread.position < thread.end) runAll.addChild(new ThreadsRequest(thread));
+				if (thread.position < thread.end) {
+					runAll.addChild(new ThreadsRequest(thread));
+				}
 			}
 			this.request = runAll;
 		}

@@ -20,7 +20,7 @@ export default class extends Action {
 			let threads = [];
 			let startRange = start;
 			let endRange = start + blockSize;
-			for (let i = 0; i < total; i++) {
+			for (let i = 1; i <= total; i++) {
 				threads.push({ start: startRange, end: endRange, position: startRange });
 				//
 				startRange = endRange + 1;

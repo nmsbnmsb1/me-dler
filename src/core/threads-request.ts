@@ -19,9 +19,7 @@ export default class extends Action {
 	protected async doStart(context: IDLContext) {
 		let { metaData } = context;
 		let headers = context.headers ? JSON.parse(JSON.stringify(context.headers)) : {};
-		if (!metaData.ddxc) {
-			headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
-		}
+		if (metaData.ddxc) headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
 		//
 		try {
 			this.response = await request({
@@ -42,15 +40,13 @@ export default class extends Action {
 					if (!metaData.ddxc) {
 						//每次都假设完成
 						metaData.fileSize = this.thread.end = this.thread.position;
+						writeMeta(context);
 						//
 					} else {
-						if (this.thread.position > this.thread.end) {
-							this.thread.position = this.thread.end;
-						}
+						if (this.thread.position > this.thread.end) this.thread.position = this.thread.end;
+						writeMeta(context);
+						if (this.thread.position >= this.thread.end) this.getRP().resolve();
 					}
-					//
-					writeMeta(context);
-					//
 				} catch (err) {
 					this.getRP().reject(err);
 				}
