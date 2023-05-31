@@ -4,6 +4,7 @@ export default class extends Action {
     private thread;
     private response;
     private onData;
+    private onEnd;
     constructor(thread: IThread);
     protected doStart(context: IDLContext): Promise<void>;
     protected doStop(): void;

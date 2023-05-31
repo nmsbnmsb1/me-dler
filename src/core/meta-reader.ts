@@ -4,23 +4,32 @@ import { IDLContext } from '../context';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
-		let { runtime } = context;
+		let { metaData } = context;
+		metaData.status = 'invalid';
+		//
+		let stats = fs.fstatSync(metaData.dlDescriptor);
+		let actualSize = stats.size;
+		if (actualSize < context.metaSize) return;
+		//
 		try {
-			let stats = fs.fstatSync(runtime.fileDescriptor);
-			let actualSize = stats.size;
 			let readPostion = actualSize - context.metaSize;
+			//
 			let buffer = Buffer.alloc(context.metaSize);
-			fs.readSync(runtime.fileDescriptor, buffer, 0, buffer.length, readPostion);
-			//
+			fs.readSync(metaData.dlDescriptor, buffer, 0, buffer.length, readPostion);
 			let meta = JSON.parse(buffer.toString());
-			runtime.fileSize = meta.fileSize;
-			runtime.url = meta.url;
-			//runtime.url_object = url.parse(meta.url);
-			//runtime.headers = meta.headers;
-			runtime.threads = meta.threads;
+			metaData.status = undefined;
+			metaData.ddxc = meta.ddxc;
+			metaData.url = meta.url;
+			metaData.fileSize = meta.fileSize;
+			metaData.threads = meta.threads;
+			//如果不支持断点续传,重置参数
+			if (!meta.ddxc) {
+				metaData.fileSize = 0;
+				if (metaData.threads && metaData.threads[0]) {
+					metaData.threads[0].start = metaData.threads[0].end = metaData.threads[0].position = 0;
+				}
+			}
 			//
-		} catch (err) {
-			throw err;
-		}
+		} catch (err) {}
 	}
 }

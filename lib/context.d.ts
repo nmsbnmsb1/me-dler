@@ -4,12 +4,22 @@ export interface IThread {
     end: number;
     position: number;
 }
+export interface IMetaData {
+    dlFile: string;
+    dlDescriptor: number;
+    errFile: string;
+    status: string;
+    ddxc: boolean;
+    url: string;
+    acceptRanges: boolean;
+    fileSize: number;
+    threads: IThread[];
+}
 export interface IDLContext extends IContext {
     url: string;
     file: string;
     mkdir?: boolean;
     overwrite?: boolean;
-    mtdfile?: string;
     proxy?: string;
     timeout?: number;
     method?: string;
@@ -17,14 +27,8 @@ export interface IDLContext extends IContext {
         [name: string]: any;
     };
     threads?: number;
-    noThreadsSize?: number;
+    threadsLimit?: number;
     range?: string;
     metaSize?: number;
-    runtime?: {
-        fileDescriptor: number;
-        fileSize: number;
-        acceptRanges: boolean;
-        url: string;
-        threads: IThread[];
-    };
+    metaData?: IMetaData;
 }

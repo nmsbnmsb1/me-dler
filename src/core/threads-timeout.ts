@@ -6,12 +6,12 @@ export default class extends Action {
 	private timer: any;
 
 	protected async doStart(context: IDLContext) {
-		let { runtime } = context;
+		let { metaData } = context;
 		let totalBytesDownloaded = 0;
 		//
 		this.timer = setInterval(() => {
 			let bytesDownloaded = 0;
-			for (let thread of runtime.threads) bytesDownloaded += thread.position - thread.start;
+			for (let thread of metaData.threads) bytesDownloaded += thread.position - thread.start;
 			if (bytesDownloaded > totalBytesDownloaded) {
 				// All is well
 				totalBytesDownloaded = bytesDownloaded;

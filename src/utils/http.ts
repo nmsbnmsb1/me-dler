@@ -5,6 +5,7 @@ import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import axios, { AxiosResponse } from 'axios';
+import { e } from './errs';
 
 http.globalAgent.maxSockets = https.globalAgent.maxSockets = 200;
 
@@ -30,7 +31,7 @@ export async function request(options: { method?: string; url: string; headers?:
 	if (!options.timeout) options.timeout = 10000;
 	//
 	let canceler = new AbortController();
-	let timeout = setTimeout(() => canceler.abort(), options.timeout);
+	let timeout = setTimeout(() => canceler.abort('timeout'), options.timeout);
 	let response: AxiosResponse;
 	try {
 		response = await axios.request({
@@ -41,7 +42,11 @@ export async function request(options: { method?: string; url: string; headers?:
 		clearTimeout(timeout);
 	} catch (err) {
 		clearTimeout(timeout);
-		throw err;
+		if (err === 'timeout') {
+			throw e(1000, timeout);
+		} else {
+			throw err;
+		}
 	}
 	//
 	return response;

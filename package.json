@@ -14,18 +14,14 @@
 		"build": "npm run build:cjs && npm run build:esm"
 	},
 	"dependencies": {
-		"async": "^3.2.4",
 		"axios": "^1.4.0",
-		"underscore": "^1.13.6",
 		"me-actions": "https://github.com/nmsbnmsb1/me-actions.git",
-		"http-proxy-agent": "^6.1.0",
-		"https-proxy-agent": "^6.2.0",
+		"http-proxy-agent": "^7.0.0",
+		"https-proxy-agent": "^7.0.0",
 		"socks-proxy-agent": "^8.0.1"
 	},
 	"devDependencies": {
-		"@types/async": "^3.2.20",
-		"@types/node": "^20.2.3",
-		"@types/underscore": "^1.11.4",
+		"@types/node": "^20.2.5",
 		"prettier": "^2.8.8",
 		"typescript": "^5.0.4"
 	}

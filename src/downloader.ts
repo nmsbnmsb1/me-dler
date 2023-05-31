@@ -1,11 +1,13 @@
 import fs from 'fs';
-import { RunOne, ErrHandler } from 'me-actions';
+import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
 import { IDLContext } from './context';
+//
+import InitContext from './core/init-context';
 import FileOpen from './core/file-open';
+import MetaReader from './core/meta-reader';
 import HeadRequest from './core/head-request';
 import ThreadsGenerator from './core/threads-generator';
 import MetaWriter from './core/meta-writer';
-import MetaReader from './core/meta-reader';
 import DataRequest from './core/data-request';
 import FileClose from './core/file-close';
 
@@ -19,51 +21,32 @@ export class Downloader extends RunOne {
 
 	protected async doStart(context: IDLContext) {
 		//查看文件是否已下载
-		if (fs.existsSync(context.file)) {
-			return;
-		}
-		//初始化context
-		{
-			if (context.mkdir !== false) context.mkdir = true;
-			if (context.overwrite !== true) context.overwrite = false;
-			if (!context.mtdfile) context.mtdfile = `${context.file}.mtd`;
-			//
-			if (!context.proxy) context.proxy = 'http://127.0.0.1:1087';
-			if (!context.timeout) context.timeout = 5000;
-			if (!context.method) context.method = 'GET';
-			if (!context.headers) context.headers = {};
-			if (!context.threads) context.threads = 3;
-			if (!context.noThreadsSize) context.noThreadsSize = 500 * 1024;
-			if (!context.range) context.range = '0-100';
-			if (!context.metaSize) context.metaSize = 10 * 1024;
-			//
-			context.runtime = {} as any;
-		}
+		if (fs.existsSync(context.file)) return;
 		//
-		let mode = 1;
-		if (fs.existsSync(context.mtdfile)) {
-			if (context.overwrite) {
-				fs.rmSync(context.mtdfile);
-			} else {
-				mode = 2;
-			}
-		}
+		//0.初始化context
+		this.addChild(new InitContext());
+		//1.准备要下载的文件
+		this.addChild(new FileOpen());
+		//2.尝试读取MetaData
+		this.addChild(new MetaReader());
+		//3.如果MetaData无法读取或者读取错误，则重新获取MetaData
+		this.addChild(
+			new ActionForFunc(async () => {
+				//如果MetaData读取有错误
+				if (context.metaData.status) {
+					//3.1 获取资源情况
+					this.addChild(new HeadRequest());
+					//3.2 生成下载线程
+					this.addChild(new ThreadsGenerator());
+					//3.3 写入MetaData
+					this.addChild(new MetaWriter());
+				}
+				//
+				this.addChild(new DataRequest());
+				this.addChild(new FileClose());
+			})
+		);
 		//
-		if (mode === 1) {
-			this.addChild(new FileOpen());
-			this.addChild(new HeadRequest());
-			this.addChild(new ThreadsGenerator());
-			this.addChild(new MetaWriter());
-			//this.addChild(new MetaReader());
-			this.addChild(new DataRequest());
-			this.addChild(new FileClose());
-		} else if (mode === 2) {
-			this.addChild(new FileOpen());
-			this.addChild(new MetaReader());
-			this.addChild(new DataRequest());
-			this.addChild(new FileClose());
-		}
-		//x
 		return super.doStart(context);
 	}
 }

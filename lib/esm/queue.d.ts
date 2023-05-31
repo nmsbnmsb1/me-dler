@@ -4,10 +4,12 @@ import { Downloader } from './downloader';
 export declare class DLQueue extends RunQueue {
     private static _instance;
     static getInstance(): DLQueue;
-    static addOne(context: IDLContext): Downloader;
-    static doOne(context: IDLContext): Promise<import("me-actions").Action>;
+    static setRunCount(runCount: number): void;
+    static getDL(context: IDLContext): Downloader;
+    static addOne(dl: Downloader): void;
     static stopOne(dl: Downloader): void;
-    static batchDownload(ctxs: IDLContext[]): Downloader[];
-    static doBatch(ctxs: IDLContext[], errHandler?: number): Promise<Error>;
+    static doOne(dl: Downloader): Promise<import("me-actions").Action>;
+    static batchDownload(dls: Downloader[]): void;
     static stopBatch(dls: Downloader[]): void;
+    static doBatch(dls: Downloader[], errHandler?: number): Promise<Error>;
 }

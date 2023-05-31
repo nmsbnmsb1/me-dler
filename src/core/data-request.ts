@@ -5,16 +5,22 @@ import ThreadsTimeout from './threads-timeout';
 
 export default class extends Action {
 	private timeout: ThreadsTimeout;
-	private request: RunAll;
+	private request: Action;
 
 	protected async doStart(context: IDLContext) {
 		this.timeout = new ThreadsTimeout().start(context).watch((a: Action) => {
 			if (a.isRejected()) this.getRP().reject(a.getError());
 		});
 		//
-		this.request = new RunAll(ErrHandler.RejectAllDone);
-		for (let thread of context.runtime.threads) {
-			if (thread.position < thread.end) this.request.addChild(new ThreadsRequest(thread));
+		let { metaData } = context;
+		if (metaData.threads.length <= 1) {
+			this.request = new ThreadsRequest(metaData.threads[0]);
+		} else {
+			let runAll = new RunAll(ErrHandler.RejectAllDone);
+			for (let thread of metaData.threads) {
+				if (thread.position < thread.end) runAll.addChild(new ThreadsRequest(thread));
+			}
+			this.request = runAll;
 		}
 		this.request.start(context).watch((a: Action) => {
 			if (a.isResolved()) this.getRP().resolve();

@@ -5,10 +5,10 @@ import { e } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
-		let { runtime } = context;
+		let { metaData } = context;
 		//
 		let isCompleted = true;
-		for (let thread of runtime.threads) {
+		for (let thread of metaData.threads) {
 			if (thread.position < thread.end) {
 				isCompleted = false;
 				break;
@@ -16,8 +16,8 @@ export default class extends Action {
 		}
 		if (!isCompleted) throw e(1013);
 		//
-		fs.ftruncateSync(runtime.fileDescriptor, runtime.fileSize);
-		fs.closeSync(runtime.fileDescriptor);
-		fs.renameSync(context.mtdfile, context.file);
+		fs.ftruncateSync(metaData.dlDescriptor, metaData.fileSize);
+		fs.closeSync(metaData.dlDescriptor);
+		fs.renameSync(metaData.dlFile, context.file);
 	}
 }
