@@ -1,8 +1,7 @@
-import fs from 'fs';
 import { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
 import { IDLContext } from '../context';
-import { e, request } from '../utils';
+import { request } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
@@ -13,7 +12,7 @@ export default class extends Action {
 			response = await request({
 				method: 'HEAD',
 				url: context.url,
-				headers: context.headers ? JSON.parse(JSON.stringify(context.headers)) : {},
+				headers: context.headers,
 				timeout: context.timeout,
 			});
 		} catch (err) {
@@ -24,30 +23,30 @@ export default class extends Action {
 		let { metaData } = context;
 		//
 		if (responseError) {
-			metaData.status = JSON.stringify({ url: context.url, message: responseError.message });
 			//写入错误
-			fs.writeFileSync(metaData.errFile, metaData.status, { mode: 0o777 });
-			//如果没有写入数据，则删除文件
-			if (fs.fstatSync(metaData.dlDescriptor).size <= 0) {
-				fs.closeSync(metaData.dlDescriptor);
-				fs.unlinkSync(metaData.dlFile);
-			}
+			//metaData.status = JSON.stringify({ url: context.url, message: responseError.message });
+			//fs.writeFileSync(metaData.errFile, metaData.status, { mode: 0o777 });
+			//throw e(1002, responseError.message, `HEAD: ${context.url}`);
 			//
-			throw e(1002, context.url);
-		}
-		//
-		let fileSize = parseInt(response.headers['content-length']);
-		metaData.status = undefined;
-		metaData.url = response.request?.responseUrl || context.url;
-		//
-		if (isNaN(fileSize)) {
+			metaData.status = undefined;
+			metaData.url = context.url;
 			metaData.ddxc = false;
 			metaData.acceptRanges = true;
 			metaData.fileSize = 0;
+			//
 		} else {
-			metaData.ddxc = true;
-			metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
-			metaData.fileSize = fileSize;
+			let fileSize = parseInt(response.headers['content-length']);
+			metaData.status = undefined;
+			metaData.url = response.request?.responseUrl || context.url;
+			if (isNaN(fileSize)) {
+				metaData.ddxc = false;
+				metaData.acceptRanges = true;
+				metaData.fileSize = 0;
+			} else {
+				metaData.ddxc = true;
+				metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
+				metaData.fileSize = fileSize;
+			}
 		}
 	}
 }

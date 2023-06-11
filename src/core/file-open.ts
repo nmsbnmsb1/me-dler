@@ -16,9 +16,9 @@ export default class extends Action {
 				existsDLFile = false;
 			}
 		}
-		if (fs.existsSync(metaData.errFile)) {
-			fs.unlinkSync(metaData.errFile);
-		}
+		// if (fs.existsSync(metaData.errFile)) {
+		// 	fs.unlinkSync(metaData.errFile);
+		// }
 		//
 		//创建父级文件夹
 		if (context.mkdir) {

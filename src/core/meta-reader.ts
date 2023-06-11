@@ -9,14 +9,16 @@ export default class extends Action {
 		//
 		let stats = fs.fstatSync(metaData.dlDescriptor);
 		let actualSize = stats.size;
-		if (actualSize < context.metaSize) return;
+		if (actualSize < context.metaSize) {
+			return;
+		}
 		//
 		try {
 			let readPostion = actualSize - context.metaSize;
-			//
 			let buffer = Buffer.alloc(context.metaSize);
 			fs.readSync(metaData.dlDescriptor, buffer, 0, buffer.length, readPostion);
 			let meta = JSON.parse(buffer.toString());
+			//
 			metaData.status = undefined;
 			metaData.ddxc = meta.ddxc;
 			metaData.url = meta.url;
@@ -29,7 +31,8 @@ export default class extends Action {
 					metaData.threads[0].start = metaData.threads[0].end = metaData.threads[0].position = 0;
 				}
 			}
+		} catch (err) {
 			//
-		} catch (err) {}
+		}
 	}
 }

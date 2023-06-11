@@ -28,6 +28,6 @@ export function writeMeta(context: IDLContext) {
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
-		writeMeta(context);
+		return writeMeta(context);
 	}
 }

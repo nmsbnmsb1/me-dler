@@ -15,7 +15,7 @@ export class Downloader extends RunOne {
 	protected context: IDLContext;
 
 	constructor(context: IDLContext) {
-		super(ErrHandler.RejectImmediately);
+		super(ErrHandler.RejectAllDone);
 		this.context = context;
 	}
 
@@ -23,29 +23,34 @@ export class Downloader extends RunOne {
 		//查看文件是否已下载
 		if (fs.existsSync(context.file)) return;
 		//
-		//0.初始化context
-		this.addChild(new InitContext());
-		//1.准备要下载的文件
-		this.addChild(new FileOpen());
-		//2.尝试读取MetaData
-		this.addChild(new MetaReader());
-		//3.如果MetaData无法读取或者读取错误，则重新获取MetaData
-		this.addChild(
-			new ActionForFunc(async () => {
-				//如果MetaData读取有错误
-				if (context.metaData.status) {
-					//3.1 获取资源情况
-					this.addChild(new HeadRequest());
-					//3.2 生成下载线程
-					this.addChild(new ThreadsGenerator());
-					//3.3 写入MetaData
-					this.addChild(new MetaWriter());
-				}
-				//
-				this.addChild(new DataRequest());
-				this.addChild(new FileClose());
-			})
-		);
+		let one = new RunOne(ErrHandler.RejectImmediately);
+		{
+			//0.初始化context
+			one.addChild(new InitContext());
+			//1.准备要下载的文件
+			one.addChild(new FileOpen());
+			//2.尝试读取MetaData
+			one.addChild(new MetaReader());
+			//3.如果MetaData无法读取或者读取错误，则重新获取MetaData
+			one.addChild(
+				new ActionForFunc(async () => {
+					//如果MetaData读取有错误
+					if (context.metaData.status) {
+						//3.1 获取资源情况
+						one.addChild(new HeadRequest());
+						//3.2 生成下载线程
+						one.addChild(new ThreadsGenerator());
+						//3.3 写入MetaData
+						one.addChild(new MetaWriter());
+					}
+					//
+					one.addChild(new DataRequest());
+				})
+			);
+		}
+		this.addChild(one);
+		//
+		this.addChild(new FileClose());
 		//
 		return super.doStart(context);
 	}

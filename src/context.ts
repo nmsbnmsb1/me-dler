@@ -10,7 +10,7 @@ export interface IMetaData {
 	//${filename}.dl
 	dlFile: string;
 	dlDescriptor: number;
-	errFile: string;
+	//errFile: string;
 	//
 	status: string;
 	ddxc: boolean;

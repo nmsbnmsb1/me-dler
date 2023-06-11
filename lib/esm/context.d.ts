@@ -7,7 +7,6 @@ export interface IThread {
 export interface IMetaData {
     dlFile: string;
     dlDescriptor: number;
-    errFile: string;
     status: string;
     ddxc: boolean;
     url: string;

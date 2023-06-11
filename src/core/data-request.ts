@@ -1,32 +1,38 @@
-import { ErrHandler, Action, RunAll } from 'me-actions';
+import { Action, ErrHandler, RunAll } from 'me-actions';
 import { IDLContext } from '../context';
 import ThreadsRequest from './threads-request';
 import ThreadsTimeout from './threads-timeout';
 
 export default class extends Action {
 	private timeout: ThreadsTimeout;
-	private request: Action;
-
+	private thread: Action;
+	//
 	protected async doStart(context: IDLContext) {
-		this.timeout = new ThreadsTimeout().start(context).watch((a: Action) => {
-			if (a.isRejected()) this.getRP().reject(a.getError());
+		//
+		this.timeout = new ThreadsTimeout().start(context).watch(() => {
+			if (this.timeout.isRejected()) {
+				this.endRP(true, 'timeout');
+			}
 		});
 		//
 		let { metaData } = context;
 		if (metaData.threads.length <= 1) {
-			this.request = new ThreadsRequest(metaData.threads[0]);
+			this.thread = new ThreadsRequest(metaData.threads[0]);
 		} else {
-			let runAll = new RunAll(ErrHandler.RejectAllDone);
+			let all = new RunAll(ErrHandler.RejectAllDone);
 			for (let thread of metaData.threads) {
 				if (thread.position < thread.end) {
-					runAll.addChild(new ThreadsRequest(thread));
+					all.addChild(new ThreadsRequest(thread));
 				}
 			}
-			this.request = runAll;
+			this.thread = all;
 		}
-		this.request.start(context).watch((a: Action) => {
-			if (a.isResolved()) this.getRP().resolve();
-			else if (a.isRejected()) this.getRP().reject(a.getError());
+		this.thread.start(context).watch(() => {
+			if (this.thread.isResolved()) {
+				this.endRP(false);
+			} else if (this.thread.isRejected()) {
+				this.endRP(true, this.thread.getError());
+			}
 		});
 		//
 		await this.getRP().p;
@@ -34,7 +40,7 @@ export default class extends Action {
 
 	protected doStop(context: IDLContext) {
 		if (this.timeout) this.timeout.stop(context);
-		if (this.request) this.request.stop(context);
+		if (this.thread) this.thread.stop(context);
 		this.endRP();
 	}
 }

@@ -29,38 +29,38 @@ export default class extends Action {
 				timeout: context.timeout,
 				responseType: 'stream',
 			});
-			//
-			this.onData = (chunk: any) => {
-				if (!this.isPending()) return;
-				//
-				try {
-					fs.writeSync(metaData.dlDescriptor, chunk, 0, chunk.length, this.thread.position);
-					this.thread.position += chunk.length;
-					//如果不支持断点续传
-					if (!metaData.ddxc) {
-						//每次都假设完成
-						metaData.fileSize = this.thread.end = this.thread.position;
-						writeMeta(context);
-						//
-					} else {
-						if (this.thread.position > this.thread.end) this.thread.position = this.thread.end;
-						writeMeta(context);
-						if (this.thread.position >= this.thread.end) this.getRP().resolve();
-					}
-				} catch (err) {
-					this.getRP().reject(err);
-				}
-			};
-			this.response.data.on('data', this.onData);
-			//
-			this.onEnd = () => {
-				this.getRP().resolve();
-			};
-			this.response.data.on('end', this.onEnd);
-			//
 		} catch (err) {
-			throw e(1002, `${err}: ${context.url}`);
+			throw e(1002, err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
 		}
+		//
+		this.onData = (chunk: any) => {
+			if (!this.isPending()) return;
+			//
+			try {
+				fs.writeSync(metaData.dlDescriptor, chunk, 0, chunk.length, this.thread.position);
+				this.thread.position += chunk.length;
+				//如果不支持断点续传
+				if (!metaData.ddxc) {
+					//每次都假设完成
+					metaData.fileSize = this.thread.end = this.thread.position;
+					writeMeta(context);
+					//
+				} else {
+					if (this.thread.position > this.thread.end) this.thread.position = this.thread.end;
+					writeMeta(context);
+					if (this.thread.position >= this.thread.end) {
+						this.endRP(false);
+					}
+				}
+			} catch (err) {
+				this.endRP(true, err);
+			}
+		};
+		this.onEnd = () => {
+			this.endRP(false);
+		};
+		this.response.data.on('data', this.onData);
+		this.response.data.on('end', this.onEnd);
 		//
 		await this.getRP().p;
 	}

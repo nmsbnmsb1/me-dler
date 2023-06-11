@@ -1,4 +1,3 @@
-import url from 'url';
 import http from 'http';
 import https from 'https';
 import { HttpProxyAgent } from 'http-proxy-agent';
@@ -37,7 +36,7 @@ export async function request(options: { method?: string; url: string; headers?:
 		response = await axios.request({
 			...(options as any),
 			signal: canceler.signal,
-			...getProxyAgent(options.proxy),
+			//...getProxyAgent(options.proxy),
 		});
 		clearTimeout(timeout);
 	} catch (err) {
