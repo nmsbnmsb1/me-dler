@@ -29,6 +29,7 @@ export default class extends Action {
 				metaData.fileSize = 0;
 				if (metaData.threads && metaData.threads[0]) {
 					metaData.threads[0].start = metaData.threads[0].end = metaData.threads[0].position = 0;
+					metaData.threads[0].done = false;
 				}
 			}
 		} catch (err) {

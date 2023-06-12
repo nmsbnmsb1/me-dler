@@ -18,20 +18,15 @@ export default class extends Action {
 				//
 			} else {
 				//context.timeout 没有收到数据
-				this.endRP(true, e(1000, context.timeout));
+				this.getRP().reject(e(1000, context.timeout));
 			}
 		}, context.timeout);
 		//
 		await this.getRP().p;
-		//清理
-		clearInterval(this.timer);
-		this.timer = undefined;
 	}
 
 	protected doStop() {
 		if (this.timer) clearInterval(this.timer);
 		this.timer = undefined;
-		//
-		this.endRP();
 	}
 }

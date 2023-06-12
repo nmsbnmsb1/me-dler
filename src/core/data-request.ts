@@ -11,7 +11,7 @@ export default class extends Action {
 		//
 		this.timeout = new ThreadsTimeout().start(context).watch(() => {
 			if (this.timeout.isRejected()) {
-				this.endRP(true, 'timeout');
+				this.getRP().reject(this.timeout.getError());
 			}
 		});
 		//
@@ -21,7 +21,7 @@ export default class extends Action {
 		} else {
 			let all = new RunAll(ErrHandler.RejectAllDone);
 			for (let thread of metaData.threads) {
-				if (thread.position < thread.end) {
+				if (!thread.done) {
 					all.addChild(new ThreadsRequest(thread));
 				}
 			}
@@ -29,9 +29,9 @@ export default class extends Action {
 		}
 		this.thread.start(context).watch(() => {
 			if (this.thread.isResolved()) {
-				this.endRP(false);
+				this.getRP().resolve();
 			} else if (this.thread.isRejected()) {
-				this.endRP(true, this.thread.getError());
+				this.getRP().reject(this.thread.getError());
 			}
 		});
 		//
@@ -41,6 +41,5 @@ export default class extends Action {
 	protected doStop(context: IDLContext) {
 		if (this.timeout) this.timeout.stop(context);
 		if (this.thread) this.thread.stop(context);
-		this.endRP();
 	}
 }

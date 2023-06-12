@@ -3,8 +3,11 @@ import { IDLContext, IMetaData } from '../context';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
-		if (context.mkdir !== false) context.mkdir = true;
-		if (context.overwrite !== true) context.overwrite = false;
+		if (!context.errs) context.errs = [];
+		//
+		if (context.mkdir === undefined) context.mkdir = true;
+		if (context.overwrite === undefined) context.overwrite = false;
+		if (context.outputErr === undefined) context.outputErr = true;
 		//
 		if (!context.timeout) context.timeout = 10000;
 		if (!context.method) context.method = 'GET';
@@ -14,6 +17,6 @@ export default class extends Action {
 		if (!context.range) context.range = '0-100';
 		if (!context.metaSize) context.metaSize = 10 * 1024;
 		//
-		context.metaData = { dlFile: `${context.file}.dl` } as IMetaData;
+		context.metaData = { dlFile: `${context.file}.dl`, errFile: `${context.file}.err` } as IMetaData;
 	}
 }

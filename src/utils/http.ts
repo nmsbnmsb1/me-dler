@@ -36,7 +36,7 @@ export async function request(options: { method?: string; url: string; headers?:
 		response = await axios.request({
 			...(options as any),
 			signal: canceler.signal,
-			//...getProxyAgent(options.proxy),
+			...getProxyAgent(options.proxy),
 		});
 		clearTimeout(timeout);
 	} catch (err) {

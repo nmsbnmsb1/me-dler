@@ -4,13 +4,14 @@ export interface IThread {
 	start: number;
 	end: number;
 	position: number;
+	done: boolean;
 }
 
 export interface IMetaData {
 	//${filename}.dl
 	dlFile: string;
 	dlDescriptor: number;
-	//errFile: string;
+	errFile: string;
 	//
 	status: string;
 	ddxc: boolean;
@@ -18,6 +19,8 @@ export interface IMetaData {
 	acceptRanges: boolean;
 	fileSize: number;
 	threads: IThread[];
+	//
+	err?: Error;
 }
 
 export interface IDLContext extends IContext {
@@ -28,6 +31,7 @@ export interface IDLContext extends IContext {
 	//下载的控制细节
 	mkdir?: boolean; //default true
 	overwrite?: boolean; //default false
+	outputErr?: boolean; //default true
 	//Proxy 代理
 	proxy?: string;
 	//If no data is received the download times out. It is measured in mileseconds.

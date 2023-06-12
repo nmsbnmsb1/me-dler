@@ -1,24 +1,34 @@
 import fs from 'fs';
 import { Action } from 'me-actions';
 import { IDLContext } from '../context';
-import { e } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
 		let { metaData } = context;
+		//如果有任何错误
+		if (context.outputErr && context.errs.length > 0) {
+			let errs = [];
+			for (let err of context.errs) errs.push(...err.stack.split('\n'));
+			//
+			fs.writeFileSync(
+				metaData.errFile,
+				JSON.stringify({ url: context.url, errs }, undefined, 4),
+				{ mode: 0o777 } //
+			);
+		}
 		//
 		if (!metaData.dlDescriptor) return;
 		//
 		let completed = true;
-		if (metaData.threads && metaData.threads.length > 0) {
+		if (!metaData.threads || metaData.threads.length <= 0) {
+			completed = false;
+		} else {
 			for (let thread of metaData.threads) {
-				if (thread.end === 0 || thread.position < thread.end) {
+				if (!thread.done) {
 					completed = false;
 					break;
 				}
 			}
-		} else {
-			completed = false;
 		}
 		//
 		if (!completed) {
