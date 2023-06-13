@@ -6,7 +6,7 @@ export default class extends Action {
 	protected async doStart(context: IDLContext) {
 		let { metaData } = context;
 		//如果有任何错误
-		if (context.outputErr && context.errs.length > 0) {
+		if (context.writeErrFile && context.errs.length > 0) {
 			let errs = [];
 			for (let err of context.errs) errs.push(...err.stack.split('\n'));
 			//
@@ -32,7 +32,10 @@ export default class extends Action {
 		}
 		//
 		if (!completed) {
-			if (fs.fstatSync(metaData.dlDescriptor).size <= 0) {
+			//获取文件size
+			let size = fs.fstatSync(metaData.dlDescriptor).size;
+			//如果size和metaSize相同，相当于没有下载
+			if (size <= context.metaSize) {
 				fs.closeSync(metaData.dlDescriptor);
 				fs.unlinkSync(metaData.dlFile);
 			} else {

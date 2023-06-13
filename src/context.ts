@@ -31,7 +31,10 @@ export interface IDLContext extends IContext {
 	//下载的控制细节
 	mkdir?: boolean; //default true
 	overwrite?: boolean; //default false
-	outputErr?: boolean; //default true
+	//
+	writeErrFile?: boolean; //default true 写入错误文件
+	skipHeadRequest?: boolean; //default false 跳过head请求
+	//
 	//Proxy 代理
 	proxy?: string;
 	//If no data is received the download times out. It is measured in mileseconds.

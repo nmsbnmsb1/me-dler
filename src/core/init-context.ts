@@ -7,7 +7,8 @@ export default class extends Action {
 		//
 		if (context.mkdir === undefined) context.mkdir = true;
 		if (context.overwrite === undefined) context.overwrite = false;
-		if (context.outputErr === undefined) context.outputErr = true;
+		if (context.writeErrFile === undefined) context.writeErrFile = true;
+		if (context.skipHeadRequest === undefined) context.skipHeadRequest = false;
 		//
 		if (!context.timeout) context.timeout = 10000;
 		if (!context.method) context.method = 'GET';

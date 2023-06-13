@@ -22,7 +22,8 @@ export interface IDLContext extends IContext {
     file: string;
     mkdir?: boolean;
     overwrite?: boolean;
-    outputErr?: boolean;
+    writeErrFile?: boolean;
+    skipHeadRequest?: boolean;
     proxy?: string;
     timeout?: number;
     method?: string;
