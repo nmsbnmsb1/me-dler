@@ -19,8 +19,8 @@ export interface IMetaData {
 }
 export interface IDLContext extends IContext {
     preloader?: (context: IDLContext) => Promise<any>;
-    url: string;
-    file: string;
+    url?: string;
+    file?: string;
     mkdir?: boolean;
     overwrite?: boolean;
     writeErrFile?: boolean;

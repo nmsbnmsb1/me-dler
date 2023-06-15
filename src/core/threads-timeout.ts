@@ -18,7 +18,7 @@ export default class extends Action {
 				//
 			} else {
 				//context.timeout 没有收到数据
-				this.getRP().reject(e(1000, context.timeout));
+				this.getRP().reject(e('req_time_out', context.timeout));
 			}
 		}, context.timeout);
 		//

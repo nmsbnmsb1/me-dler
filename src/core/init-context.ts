@@ -1,5 +1,6 @@
 import { Action } from 'me-actions';
 import { IDLContext, IMetaData } from '../context';
+import { e } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
@@ -23,5 +24,8 @@ export default class extends Action {
 		if (context.preloader) {
 			await context.preloader(context);
 		}
+		//
+		if (!context.url) throw e('no_url');
+		if (!context.file) throw e('no_file');
 	}
 }

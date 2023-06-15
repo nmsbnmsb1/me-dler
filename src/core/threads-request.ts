@@ -26,7 +26,7 @@ export default class extends Action {
 			try {
 				this.response = await request({ method: context.method, url: metaData.url, headers, timeout: context.timeout, responseType: 'stream' });
 			} catch (err) {
-				throw e(1002, err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
+				throw e('data_failed', err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
 			}
 		}
 		//流式传输

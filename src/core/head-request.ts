@@ -31,7 +31,7 @@ export default class extends Action {
 			//写入错误
 			// metaData.status = JSON.stringify({ method: 'HEAD', url: context.url, message: responseError.message }, undefined, 4);
 			// fs.writeFileSync(metaData.errFile, metaData.status, { mode: 0o777 });
-			throw e(1002, responseError.message, `HEAD: ${context.url}`);
+			throw e('data_failed', responseError.message, `HEAD: ${context.url}`);
 			//
 			// metaData.status = undefined;
 			// metaData.url = context.url;

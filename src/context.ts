@@ -27,9 +27,9 @@ export interface IDLContext extends IContext {
 	//预载
 	preloader?: (context: IDLContext) => Promise<any>;
 	//下载文件的绝对路径
-	url: string;
+	url?: string;
 	//保存文件的绝对路径
-	file: string;
+	file?: string;
 	//下载的控制细节
 	mkdir?: boolean; //default true
 	overwrite?: boolean; //default false

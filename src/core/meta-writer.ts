@@ -22,7 +22,7 @@ export function writeMeta(context: IDLContext) {
 		fs.writeSync(metaData.dlDescriptor, buffer, 0, buffer.length, writePosition);
 		//
 	} catch (err) {
-		throw e(1003, metaData.dlFile);
+		throw e('write_meta_failed', metaData.dlFile);
 	}
 }
 

@@ -1,1 +1,1 @@
-export declare function e(code: number, ...cs: any): Error;
+export declare function e(code: string, ...cs: any): Error;

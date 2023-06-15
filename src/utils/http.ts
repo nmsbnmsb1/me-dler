@@ -42,7 +42,7 @@ export async function request(options: { method?: string; url: string; headers?:
 	} catch (err) {
 		clearTimeout(timeout);
 		if (err === 'timeout') {
-			throw e(1000, timeout);
+			throw e('req_time_out', timeout);
 		} else {
 			throw err;
 		}

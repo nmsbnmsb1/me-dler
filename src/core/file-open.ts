@@ -31,7 +31,7 @@ export default class extends Action {
 		try {
 			metaData.dlDescriptor = fs.openSync(metaData.dlFile, !existsDLFile ? 'w+' : 'r+', undefined);
 		} catch (err) {
-			throw e(1001, metaData.dlFile);
+			throw e('file_failed', metaData.dlFile);
 		}
 	}
 }
