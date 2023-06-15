@@ -18,6 +18,7 @@ export interface IMetaData {
     err?: Error;
 }
 export interface IDLContext extends IContext {
+    preloader?: (context: IDLContext) => Promise<any>;
     url: string;
     file: string;
     mkdir?: boolean;
@@ -35,4 +36,5 @@ export interface IDLContext extends IContext {
     range?: string;
     metaSize?: number;
     metaData?: IMetaData;
+    hasDown?: boolean;
 }

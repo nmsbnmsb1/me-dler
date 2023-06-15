@@ -19,19 +19,20 @@ export default class extends Action {
 		//
 		if (!metaData.dlDescriptor) return;
 		//
-		let completed = true;
+		let hasDown = true;
 		if (!metaData.threads || metaData.threads.length <= 0) {
-			completed = false;
+			hasDown = false;
 		} else {
 			for (let thread of metaData.threads) {
 				if (!thread.done) {
-					completed = false;
+					hasDown = false;
 					break;
 				}
 			}
 		}
 		//
-		if (!completed) {
+		if (!hasDown) {
+			context.hasDown = false;
 			//获取文件size
 			let size = fs.fstatSync(metaData.dlDescriptor).size;
 			//如果size和metaSize相同，相当于没有下载
@@ -42,6 +43,8 @@ export default class extends Action {
 				fs.closeSync(metaData.dlDescriptor);
 			}
 		} else {
+			context.hasDown = true;
+			//
 			fs.ftruncateSync(metaData.dlDescriptor, metaData.fileSize);
 			fs.closeSync(metaData.dlDescriptor);
 			fs.renameSync(metaData.dlFile, context.file);

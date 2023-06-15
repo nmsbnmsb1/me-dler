@@ -19,5 +19,9 @@ export default class extends Action {
 		if (!context.metaSize) context.metaSize = 10 * 1024;
 		//
 		context.metaData = { dlFile: `${context.file}.dl`, errFile: `${context.file}.err` } as IMetaData;
+		//
+		if (context.preloader) {
+			await context.preloader(context);
+		}
 	}
 }

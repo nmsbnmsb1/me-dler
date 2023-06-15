@@ -24,6 +24,8 @@ export interface IMetaData {
 }
 
 export interface IDLContext extends IContext {
+	//预载
+	preloader?: (context: IDLContext) => Promise<any>;
 	//下载文件的绝对路径
 	url: string;
 	//保存文件的绝对路径
@@ -31,10 +33,8 @@ export interface IDLContext extends IContext {
 	//下载的控制细节
 	mkdir?: boolean; //default true
 	overwrite?: boolean; //default false
-	//
 	writeErrFile?: boolean; //default true 写入错误文件
 	skipHeadRequest?: boolean; //default false 跳过head请求
-	//
 	//Proxy 代理
 	proxy?: string;
 	//If no data is received the download times out. It is measured in mileseconds.
@@ -53,4 +53,6 @@ export interface IDLContext extends IContext {
 	metaSize?: number; //(Default: 10 * 1024)
 	//
 	metaData?: IMetaData;
+	//下载完成回报
+	hasDown?: boolean;
 }
