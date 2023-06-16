@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
 import { IDLContext } from './context';
+import { e } from './utils';
 //
 import InitContext from './core/init-context';
 import FileOpen from './core/file-open';
@@ -15,42 +16,48 @@ export class Downloader extends RunOne {
 	protected context: IDLContext;
 
 	constructor(context: IDLContext) {
-		super(ErrHandler.RejectAllDone);
+		super(ErrHandler.RejectImmediately);
 		this.context = context;
 	}
 
 	protected async doStart(context: IDLContext) {
-		//查看文件是否已下载
-		if (fs.existsSync(context.file)) return;
-		//
-		let one = new RunOne(ErrHandler.RejectImmediately);
-		{
-			//0.初始化context
-			one.addChild(new InitContext());
-			//1.准备要下载的文件
-			one.addChild(new FileOpen());
-			//2.尝试读取MetaData
-			one.addChild(new MetaReader());
-			//3.如果MetaData无法读取或者读取错误，则重新获取MetaData
-			one.addChild(
-				new ActionForFunc(async () => {
-					//如果MetaData读取有错误
-					if (context.metaData.status) {
-						//3.1 获取资源情况
-						one.addChild(new HeadRequest());
-						//3.2 生成下载线程
-						one.addChild(new ThreadsGenerator());
-						//3.3 写入MetaData
-						one.addChild(new MetaWriter());
-					}
-					//
-					one.addChild(new DataRequest());
-				})
-			);
+		//如果有预载脚本，则预载
+		if (context.preloader) {
+			await context.preloader(context);
 		}
-		this.addChild(one);
+		//查看文件是否已下载
+		if (!context.url) throw e('no_url');
+		if (!context.file) throw e('no_file');
+		if (fs.existsSync(context.file)) {
+			return;
+		}
 		//
-		this.addChild(new FileClose());
+		//初始化context
+		this.addChild(new InitContext());
+		//准备要下载的文件;
+		this.addChild(new FileOpen());
+		//尝试读取MetaData
+		this.addChild(new MetaReader());
+		//如果MetaData无法读取或者读取错误，则重新获取MetaData
+		this.addChild(
+			new ActionForFunc(async () => {
+				//如果MetaData读取有错误
+				if (context.metaData.status) {
+					//3.1 获取资源情况
+					this.addChild(new HeadRequest());
+					//3.2 生成下载线程
+					this.addChild(new ThreadsGenerator());
+					//3.3 写入MetaData
+					this.addChild(new MetaWriter());
+				}
+				//下载
+				this.addChild(new DataRequest());
+			})
+		);
+		//关闭文件句柄
+		this.watch(() => {
+			return new FileClose().startAsync(context);
+		});
 		//
 		return super.doStart(context);
 	}

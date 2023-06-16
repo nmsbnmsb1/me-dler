@@ -1,41 +1,16 @@
-let error = 0;
-let warning = 1;
-let info = 2;
 let codes = {
-	no_url: {
-		type: error,
-		message: 'context.url hasnot been set.',
-	},
-	no_file: {
-		type: error,
-		message: 'context.file hasnot been set.',
-	},
-	file_failed: {
-		type: error,
-		message: 'File handle could not be created on path: {0}',
-	},
-	req_time_out: {
-		type: error,
-		message: 'Download request timed out after {0} seconds. Closing connections',
-	},
-	data_failed: {
-		type: error,
-		message: 'data could not be downloaded caused by {0} from: {1}',
-	},
-	write_meta_failed: {
-		type: error,
-		message: 'could not write meta data on path:  {0}',
-	},
-	not_completed: {
-		type: error,
-		message: 'Download did not complete successfully.',
-	},
+	no_url: 'context.url hasnot been set.',
+	no_file: 'context.file hasnot been set.',
+	file_downloaded: 'File has been downloaded on path: {0}',
+	file_failed: 'File handle could not be created on path: {0}',
+	req_time_out: 'Download request timed out after {0} seconds. Closing connections',
+	data_failed: 'data could not be downloaded caused by {0} from: {1}',
+	write_meta_failed: 'could not write meta data on path:  {0}',
+	dl_not_completed: 'Download did not complete successfully.',
 };
 
 export function e(code: string, ...cs: any) {
-	let item = codes[code];
-	let message = item.message;
-
+	let message = codes[code];
 	if (cs.length > 0) {
 		let list = message.split(/\{[0-9]\}/g);
 		message = '';
