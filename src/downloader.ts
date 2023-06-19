@@ -28,7 +28,7 @@ export class Downloader extends RunOne {
 		//查看文件是否已下载
 		if (!context.url) throw e('no_url');
 		if (!context.file) throw e('no_file');
-		if (fs.existsSync(context.file)) {
+		if (!context.overwrite && fs.existsSync(context.file)) {
 			return;
 		}
 		//

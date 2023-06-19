@@ -7,6 +7,10 @@ import { e } from '../utils';
 export default class extends Action {
 	protected async doStart(context: IDLContext) {
 		let { metaData } = context;
+		//
+		if (context.overwrite && fs.existsSync(context.file)) {
+			fs.unlinkSync(context.file);
+		}
 		//如果强制overwrite，则删除可能存在的dlFile
 		let existsDLFile = fs.existsSync(metaData.dlFile);
 		if (context.overwrite) {
