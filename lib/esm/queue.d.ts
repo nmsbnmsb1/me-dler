@@ -5,6 +5,6 @@ export declare class DLQueue extends RunQueue {
     private static _ref;
     private static _instance;
     static ref(): DLQueue;
-    static unref(): void;
+    static unref(): boolean;
     getDL: (context: IDLContext) => Downloader;
 }

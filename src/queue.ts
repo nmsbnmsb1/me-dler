@@ -21,7 +21,10 @@ export class DLQueue extends RunQueue {
 				DLQueue._instance.stop();
 				DLQueue._instance = undefined;
 			}
+			return true;
 		}
+		//
+		return false;
 	}
 	public getDL = (context: IDLContext) => new Downloader(context);
 }
