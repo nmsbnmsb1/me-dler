@@ -14,14 +14,15 @@
 		"build": "pnpm run build:cjs && pnpm run build:esm"
 	},
 	"dependencies": {
-		"axios": "^1.6.2",
+		"axios": "^1.6.5",
 		"me-actions": "github:nmsbnmsb1/me-actions.git",
 		"http-proxy-agent": "^7.0.0",
 		"https-proxy-agent": "^7.0.2",
 		"socks-proxy-agent": "^8.0.2"
 	},
 	"devDependencies": {
-		"@types/node": "^20.10.2",
-		"typescript": "^5.3.2"
+		"@types/node": "^20.11.5",
+		"prettier": "^3.2.4",
+		"typescript": "^5.3.3"
 	}
 }
