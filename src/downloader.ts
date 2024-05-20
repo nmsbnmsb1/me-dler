@@ -31,7 +31,9 @@ export class Downloader extends RunOne {
 		if (!context.overwrite && fs.existsSync(context.file)) {
 			return;
 		}
-		//
+		if (context.logger) {
+			context.logger('info', `start download ${context.url} to ${context.file}`);
+		}
 		//初始化context
 		this.addChild(new InitContext());
 		//准备要下载的文件;
