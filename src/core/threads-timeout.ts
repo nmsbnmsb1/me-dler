@@ -25,7 +25,7 @@ export default class extends Action {
 		await this.getRP().p;
 	}
 
-	protected doStop() {
+	protected async doStop() {
 		if (this.timer) clearInterval(this.timer);
 		this.timer = undefined;
 	}

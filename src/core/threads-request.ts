@@ -83,7 +83,7 @@ export default class extends Action {
 		if (err) throw err;
 	}
 
-	protected doStop() {
+	protected async doStop() {
 		for (let k in this.lnMap) {
 			this.response?.data?.off(k, this.lnMap[k]);
 		}

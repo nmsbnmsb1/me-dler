@@ -58,7 +58,7 @@ export class Downloader extends RunOne {
 		);
 		//关闭文件句柄
 		this.watch(() => {
-			return new FileClose().startAsync(context);
+			return new FileClose().start(context);
 		});
 		//
 		return super.doStart(context);

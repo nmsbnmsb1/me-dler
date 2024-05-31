@@ -6,5 +6,5 @@ export default class extends Action {
     private lnMap;
     constructor(thread: IThread);
     protected doStart(context: IDLContext): Promise<void>;
-    protected doStop(): void;
+    protected doStop(): Promise<void>;
 }

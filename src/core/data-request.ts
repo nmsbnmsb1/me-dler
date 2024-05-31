@@ -9,11 +9,12 @@ export default class extends Action {
 	//
 	protected async doStart(context: IDLContext) {
 		//
-		this.timeout = new ThreadsTimeout().start(context).watch(() => {
+		this.timeout = new ThreadsTimeout().watch(() => {
 			if (this.timeout.isRejected()) {
 				this.getRP().reject(this.timeout.getError());
 			}
 		});
+		this.timeout.start(context);
 		//
 		let { metaData } = context;
 		if (metaData.threads.length <= 1) {
@@ -27,19 +28,20 @@ export default class extends Action {
 			}
 			this.thread = all;
 		}
-		this.thread.start(context).watch(() => {
+		this.thread.watch(() => {
 			if (this.thread.isResolved()) {
 				this.getRP().resolve();
 			} else if (this.thread.isRejected()) {
 				this.getRP().reject(this.thread.getError());
 			}
 		});
+		this.thread.start(context);
 		//
 		await this.getRP().p;
 	}
 
-	protected doStop(context: IDLContext) {
-		if (this.timeout) this.timeout.stop(context);
-		if (this.thread) this.thread.stop(context);
+	protected async doStop(context: IDLContext) {
+		if (this.timeout) await this.timeout.stop(context);
+		if (this.thread) await this.thread.stop(context);
 	}
 }
