@@ -1,4 +1,4 @@
-let codes = {
+let codes: any = {
 	no_url: 'context.url hasnot been set.',
 	no_file: 'context.file hasnot been set.',
 	file_downloaded: 'File has been downloaded on path: {0}',

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import https from 'https';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
