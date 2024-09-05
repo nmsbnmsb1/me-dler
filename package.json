@@ -15,14 +15,14 @@
 	},
 	"dependencies": {
 		"me-actions": "github:nmsbnmsb1/me-actions.git",
-		"axios": "^1.7.2",
+		"axios": "^1.7.7",
 		"http-proxy-agent": "^7.0.2",
 		"https-proxy-agent": "^7.0.5",
 		"socks-proxy-agent": "^8.0.4"
 	},
 	"devDependencies": {
-		"@types/node": "^20.14.11",
+		"@types/node": "^22.5.4",
 		"prettier": "^3.3.3",
-		"typescript": "^5.5.3"
+		"typescript": "^5.5.4"
 	}
 }
