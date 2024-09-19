@@ -79,11 +79,13 @@ typings/
 *.sln
 *.sw?
 
+# OS
+.DS_Store
 
 # 
-.DS_Store
 package-lock.json
 pnpm-lock.yaml
 refs
 commit
+
 downloads
