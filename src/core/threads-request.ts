@@ -1,22 +1,22 @@
 import fs from 'fs';
 import { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
-import { IDLContext, IThread } from '../context';
+import { DLContext, DLThread } from '../context';
 import { e, request } from '../utils';
 import { writeMeta } from './meta-writer';
 
 export default class extends Action {
-	private thread: IThread;
+	private thread: DLThread;
 	private response: AxiosResponse;
 	private lnMap: any;
 
-	constructor(thread: IThread) {
+	constructor(thread: DLThread) {
 		super();
 		this.thread = thread;
 		this.lnMap = {};
 	}
 
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		let { metaData } = context;
 		let headers = context.headers ? JSON.parse(JSON.stringify(context.headers)) : {};
 		if (metaData.ddxc) headers.range = `bytes=${this.thread.position}-${this.thread.end}`;

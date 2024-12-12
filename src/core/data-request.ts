@@ -1,5 +1,5 @@
 import { Action, ErrHandler, RunAll } from 'me-actions';
-import { IDLContext } from '../context';
+import { DLContext } from '../context';
 import ThreadsRequest from './threads-request';
 import ThreadsTimeout from './threads-timeout';
 
@@ -7,7 +7,7 @@ export default class extends Action {
 	private timeout: ThreadsTimeout;
 	private thread: Action;
 	//
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		//
 		this.timeout = new ThreadsTimeout().watch(() => {
 			if (this.timeout.isRejected()) {
@@ -40,7 +40,7 @@ export default class extends Action {
 		await this.getRP().p;
 	}
 
-	protected async doStop(context: IDLContext) {
+	protected async doStop(context: DLContext) {
 		if (this.timeout) await this.timeout.stop(context);
 		if (this.thread) await this.thread.stop(context);
 	}

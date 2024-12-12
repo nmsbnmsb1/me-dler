@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
-import { IDLContext } from './context';
+import { DLContext } from './context';
 import { e } from './utils';
 //
 import InitContext from './core/init-context';
@@ -13,14 +13,14 @@ import DataRequest from './core/data-request';
 import FileClose from './core/file-close';
 
 export class Downloader extends RunOne {
-	protected context: IDLContext;
+	protected context: DLContext;
 
-	constructor(context: IDLContext) {
+	constructor(context: DLContext) {
 		super(ErrHandler.RejectImmediately);
 		this.context = context;
 	}
 
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		//如果有预载脚本，则预载
 		if (context.preloader) {
 			await context.preloader(context);

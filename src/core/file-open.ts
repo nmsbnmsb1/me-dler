@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { Action } from 'me-actions';
-import { IDLContext } from '../context';
+import { DLContext } from '../context';
 import { e } from '../utils';
 
 export default class extends Action {
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		let { metaData } = context;
 		//
 		if (context.overwrite && fs.existsSync(context.file)) {

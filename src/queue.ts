@@ -1,5 +1,5 @@
 import { ErrHandler, RunQueue } from 'me-actions';
-import { IDLContext } from './context';
+import { DLContext } from './context';
 import { Downloader } from './downloader';
 
 export class DLQueue extends RunQueue {
@@ -27,5 +27,5 @@ export class DLQueue extends RunQueue {
 		//
 		return false;
 	}
-	public getDL = (context: IDLContext) => new Downloader(context);
+	public getDL = (context: DLContext) => new Downloader(context);
 }

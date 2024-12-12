@@ -1,10 +1,10 @@
 import { RunQueue } from 'me-actions';
-import { IDLContext } from './context';
+import { DLContext } from './context';
 import { Downloader } from './downloader';
 export declare class DLQueue extends RunQueue {
     private static _ref;
     private static _instance;
     static ref(): DLQueue;
     static unref(): boolean;
-    getDL: (context: IDLContext) => Downloader;
+    getDL: (context: DLContext) => Downloader;
 }

@@ -1,9 +1,9 @@
 import fs from 'fs';
 import { Action } from 'me-actions';
-import { IDLContext } from '../context';
+import { DLContext } from '../context';
 import { e } from '../utils';
 
-export function writeMeta(context: IDLContext) {
+export function writeMeta(context: DLContext) {
 	let { metaData } = context;
 	//
 	try {
@@ -27,7 +27,7 @@ export function writeMeta(context: IDLContext) {
 }
 
 export default class extends Action {
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		return writeMeta(context);
 	}
 }

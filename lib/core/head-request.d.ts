@@ -1,5 +1,5 @@
 import { Action } from 'me-actions';
-import { IDLContext } from '../context';
+import { DLContext } from '../context';
 export default class extends Action {
-    protected doStart(context: IDLContext): Promise<void>;
+    protected doStart(context: DLContext): Promise<void>;
 }

@@ -1,11 +1,11 @@
-import { IContext } from 'me-actions';
-export interface IThread {
+import { ActionContext } from 'me-actions';
+export interface DLThread {
     start: number;
     end: number;
     position: number;
     done: boolean;
 }
-export interface IMetaData {
+export interface DLMetaData {
     dlFile: string;
     dlDescriptor: number;
     errFile: string;
@@ -14,11 +14,11 @@ export interface IMetaData {
     url: string;
     acceptRanges: boolean;
     fileSize: number;
-    threads: IThread[];
+    threads: DLThread[];
     err?: Error;
 }
-export interface IDLContext extends IContext {
-    preloader?: (context: IDLContext) => Promise<any>;
+export interface DLContext extends ActionContext {
+    preloader?: (context: DLContext) => Promise<any>;
     url?: string;
     file?: string;
     mkdir?: boolean;
@@ -35,6 +35,6 @@ export interface IDLContext extends IContext {
     threadsLimit?: number;
     range?: string;
     metaSize?: number;
-    metaData?: IMetaData;
+    metaData?: DLMetaData;
     hasDown?: boolean;
 }

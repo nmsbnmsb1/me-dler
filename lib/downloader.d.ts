@@ -1,7 +1,7 @@
 import { RunOne } from 'me-actions';
-import { IDLContext } from './context';
+import { DLContext } from './context';
 export declare class Downloader extends RunOne {
-    protected context: IDLContext;
-    constructor(context: IDLContext);
-    protected doStart(context: IDLContext): Promise<void>;
+    protected context: DLContext;
+    constructor(context: DLContext);
+    protected doStart(context: DLContext): Promise<void>;
 }

@@ -1,8 +1,8 @@
 import { Action } from 'me-actions';
-import { IDLContext, IMetaData } from '../context';
+import { DLContext, DLMetaData } from '../context';
 
 export default class extends Action {
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		//base
 		if (!context.errs) context.errs = [];
 		//
@@ -19,6 +19,6 @@ export default class extends Action {
 		if (!context.range) context.range = '0-100';
 		if (!context.metaSize) context.metaSize = 10 * 1024;
 		//
-		context.metaData = { dlFile: `${context.file}.dl`, errFile: `${context.file}.err` } as IMetaData;
+		context.metaData = { dlFile: `${context.file}.dl`, errFile: `${context.file}.err` } as DLMetaData;
 	}
 }

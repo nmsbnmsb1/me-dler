@@ -1,9 +1,9 @@
 import fs from 'fs';
 import { Action } from 'me-actions';
-import { IDLContext } from '../context';
+import { DLContext } from '../context';
 
 export default class extends Action {
-	protected async doStart(context: IDLContext) {
+	protected async doStart(context: DLContext) {
 		let { metaData } = context;
 		//如果有任何错误
 		if (context.writeErrFile && context.errs.length > 0) {

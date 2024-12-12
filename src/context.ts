@@ -1,13 +1,13 @@
-import { IContext } from 'me-actions';
+import { ActionContext } from 'me-actions';
 
-export interface IThread {
+export interface DLThread {
 	start: number;
 	end: number;
 	position: number;
 	done: boolean;
 }
 
-export interface IMetaData {
+export interface DLMetaData {
 	//${filename}.dl
 	dlFile: string;
 	dlDescriptor: number;
@@ -18,14 +18,14 @@ export interface IMetaData {
 	url: string;
 	acceptRanges: boolean;
 	fileSize: number;
-	threads: IThread[];
+	threads: DLThread[];
 	//
 	err?: Error;
 }
 
-export interface IDLContext extends IContext {
+export interface DLContext extends ActionContext {
 	//预载
-	preloader?: (context: IDLContext) => Promise<any>;
+	preloader?: (context: DLContext) => Promise<any>;
 	//下载文件的绝对路径
 	url?: string;
 	//保存文件的绝对路径
@@ -52,7 +52,7 @@ export interface IDLContext extends IContext {
 	//metaData size
 	metaSize?: number; //(Default: 10 * 1024)
 	//
-	metaData?: IMetaData;
+	metaData?: DLMetaData;
 	//下载完成回报
 	hasDown?: boolean;
 }
