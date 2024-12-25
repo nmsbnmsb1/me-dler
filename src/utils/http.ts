@@ -1,9 +1,9 @@
-import http from 'http';
-import https from 'https';
+import http from 'node:http';
+import https from 'node:https';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import axios, { AxiosResponse } from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import { e } from './errs';
 
 http.globalAgent.maxSockets = https.globalAgent.maxSockets = 200;
@@ -25,7 +25,14 @@ export function getProxyAgent(proxy: string) {
 	// };
 }
 
-export async function request(options: { method?: string; url: string; headers?: any; timeout?: number; proxy?: string; [key: string]: any }) {
+export async function request(options: {
+	method?: string;
+	url: string;
+	headers?: any;
+	timeout?: number;
+	proxy?: string;
+	[key: string]: any;
+}) {
 	if (!options.method) options.method = 'GET';
 	if (!options.timeout) options.timeout = 10000;
 	//
@@ -43,9 +50,8 @@ export async function request(options: { method?: string; url: string; headers?:
 		clearTimeout(timeout);
 		if (err === 'timeout') {
 			throw e('req_time_out', timeout);
-		} else {
-			throw err;
 		}
+		throw err;
 	}
 	//
 	return response;

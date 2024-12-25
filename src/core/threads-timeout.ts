@@ -1,5 +1,5 @@
 import { Action } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 import { e } from '../utils';
 
 export default class extends Action {

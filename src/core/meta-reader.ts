@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Action } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
@@ -27,7 +27,7 @@ export default class extends Action {
 			//如果不支持断点续传,重置参数
 			if (!meta.ddxc) {
 				metaData.fileSize = 0;
-				if (metaData.threads && metaData.threads[0]) {
+				if (metaData.threads?.[0]) {
 					metaData.threads[0].start = metaData.threads[0].end = metaData.threads[0].position = 0;
 					metaData.threads[0].done = false;
 				}

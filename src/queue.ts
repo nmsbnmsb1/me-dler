@@ -1,5 +1,5 @@
 import { ErrHandler, RunQueue } from 'me-actions';
-import { DLContext } from './context';
+import type { DLContext } from './context';
 import { Downloader } from './downloader';
 
 export class DLQueue extends RunQueue {

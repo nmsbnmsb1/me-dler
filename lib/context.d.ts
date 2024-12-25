@@ -1,4 +1,4 @@
-import { ActionContext } from 'me-actions';
+import type { ActionContext } from "me-actions";
 export interface DLThread {
     start: number;
     end: number;

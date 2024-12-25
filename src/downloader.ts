@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
-import { DLContext } from './context';
+import type { DLContext } from './context';
 import { e } from './utils';
 //
 import InitContext from './core/init-context';

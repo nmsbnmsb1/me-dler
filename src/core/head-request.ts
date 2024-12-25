@@ -1,6 +1,6 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 import { e, request } from '../utils';
 
 export default class extends Action {
@@ -20,7 +20,12 @@ export default class extends Action {
 		let response: AxiosResponse;
 		let responseError: Error;
 		try {
-			response = await request({ method: 'HEAD', url: context.url, headers: context.headers, timeout: context.timeout });
+			response = await request({
+				method: 'HEAD',
+				url: context.url,
+				headers: context.headers,
+				timeout: context.timeout,
+			});
 		} catch (err) {
 			//如果http_status异常
 			responseError = err;
@@ -39,19 +44,19 @@ export default class extends Action {
 			// metaData.acceptRanges = true;
 			// metaData.fileSize = 0;
 			//
+		}
+		//
+		let fileSize = parseInt(response.headers['content-length']);
+		metaData.status = undefined;
+		metaData.url = response.request?.responseUrl || context.url;
+		if (isNaN(fileSize)) {
+			metaData.ddxc = false;
+			metaData.acceptRanges = true;
+			metaData.fileSize = 0;
 		} else {
-			let fileSize = parseInt(response.headers['content-length']);
-			metaData.status = undefined;
-			metaData.url = response.request?.responseUrl || context.url;
-			if (isNaN(fileSize)) {
-				metaData.ddxc = false;
-				metaData.acceptRanges = true;
-				metaData.fileSize = 0;
-			} else {
-				metaData.ddxc = true;
-				metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
-				metaData.fileSize = fileSize;
-			}
+			metaData.ddxc = true;
+			metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
+			metaData.fileSize = fileSize;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 import { RunOne } from 'me-actions';
-import { DLContext } from './context';
+import type { DLContext } from './context';
 export declare class Downloader extends RunOne {
     protected context: DLContext;
     constructor(context: DLContext);

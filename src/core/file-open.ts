@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { Action } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 import { e } from '../utils';
 
 export default class extends Action {

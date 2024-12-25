@@ -1,5 +1,5 @@
 import { Action, ErrHandler, RunAll } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 import ThreadsRequest from './threads-request';
 import ThreadsTimeout from './threads-timeout';
 

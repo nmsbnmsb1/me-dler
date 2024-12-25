@@ -1,5 +1,5 @@
 import { Action } from 'me-actions';
-import { DLContext, DLMetaData } from '../context';
+import type { DLContext, DLMetaData } from '../context';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {

@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { Action } from 'me-actions';
-import { DLContext } from '../context';
+import type { DLContext } from '../context';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
