@@ -31,12 +31,12 @@
 			},
 			"style": {
 				"useConst": "off",
-				"useNumberNamespace": "off"
+				"useNumberNamespace": "info"
 			},
 			"suspicious": {
 				"noExplicitAny": "off",
 				"noAssignInExpressions": "off",
-				"noGlobalIsNan": "off"
+				"noGlobalIsNan": "info"
 			}
 		}
 	},

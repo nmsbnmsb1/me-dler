@@ -1,16 +1,17 @@
 import fs from 'node:fs';
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
+
 import type { DLContext } from './context';
 import { e } from './utils';
-//
-import InitContext from './core/init-context';
-import FileOpen from './core/file-open';
-import MetaReader from './core/meta-reader';
-import HeadRequest from './core/head-request';
-import ThreadsGenerator from './core/threads-generator';
-import MetaWriter from './core/meta-writer';
+
 import DataRequest from './core/data-request';
 import FileClose from './core/file-close';
+import FileOpen from './core/file-open';
+import HeadRequest from './core/head-request';
+import InitContext from './core/init-context';
+import MetaReader from './core/meta-reader';
+import MetaWriter from './core/meta-writer';
+import ThreadsGenerator from './core/threads-generator';
 
 export class Downloader extends RunOne {
 	protected context: DLContext;

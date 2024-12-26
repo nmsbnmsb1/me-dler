@@ -1,9 +1,11 @@
 import http from 'node:http';
 import https from 'node:https';
+
+import axios, { type AxiosResponse } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import axios, { type AxiosResponse } from 'axios';
+
 import { e } from './errs';
 
 http.globalAgent.maxSockets = https.globalAgent.maxSockets = 200;

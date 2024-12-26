@@ -1,8 +1,8 @@
 import https from 'node:https';
+import { type AxiosResponse } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { type AxiosResponse } from 'axios';
 export declare function getProxyAgent(proxy: string): {
     httpsAgent: https.Agent;
     httpAgent?: undefined;

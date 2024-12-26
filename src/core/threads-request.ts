@@ -1,9 +1,11 @@
-import fs from "node:fs";
-import type { AxiosResponse } from "axios";
-import { Action } from "me-actions";
-import type { DLContext, DLThread } from "../context";
-import { e, request } from "../utils";
-import { writeMeta } from "./meta-writer";
+import fs from 'node:fs';
+
+import type { AxiosResponse } from 'axios';
+import { Action } from 'me-actions';
+
+import type { DLContext, DLThread } from '../context';
+import { e, request } from '../utils';
+import { writeMeta } from './meta-writer';
 
 export default class extends Action {
 	private thread: DLThread;
@@ -18,11 +20,8 @@ export default class extends Action {
 
 	protected async doStart(context: DLContext) {
 		let { metaData } = context;
-		let headers = context.headers
-			? JSON.parse(JSON.stringify(context.headers))
-			: {};
-		if (metaData.ddxc)
-			headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
+		let headers = context.headers ? JSON.parse(JSON.stringify(context.headers)) : {};
+		if (metaData.ddxc) headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
 		//
 		//创建链接
 		{
@@ -32,14 +31,10 @@ export default class extends Action {
 					url: metaData.url,
 					headers,
 					timeout: context.timeout,
-					responseType: "stream",
+					responseType: 'stream',
 				});
 			} catch (err) {
-				throw e(
-					"data_failed",
-					err.message,
-					`${context.method.toUpperCase()}: ${metaData.url}`,
-				);
+				throw e('data_failed', err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
 			}
 		}
 		//流式传输
@@ -48,13 +43,7 @@ export default class extends Action {
 				if (!this.isPending()) return;
 				//
 				try {
-					fs.writeSync(
-						metaData.dlDescriptor,
-						chunk,
-						0,
-						chunk.length,
-						this.thread.position,
-					);
+					fs.writeSync(metaData.dlDescriptor, chunk, 0, chunk.length, this.thread.position);
 					this.thread.position += chunk.length;
 					//如果不支持断点续传
 					if (!metaData.ddxc) {

@@ -1,5 +1,5 @@
-import { Action } from "me-actions";
-import type { DLContext, DLThread } from "../context";
+import { Action } from 'me-actions';
+import type { DLContext, DLThread } from '../context';
 export default class extends Action {
     private thread;
     private response;
