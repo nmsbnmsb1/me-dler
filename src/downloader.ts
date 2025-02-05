@@ -24,7 +24,7 @@ export class Downloader extends RunOne {
 	protected async doStart(context: DLContext) {
 		//如果有预载脚本，则预载
 		if (context.preloader) {
-			await context.preloader(context);
+			await context.preloader(this, context);
 		}
 		//查看文件是否已下载
 		if (!context.url) throw e('no_url');
@@ -33,7 +33,7 @@ export class Downloader extends RunOne {
 			return;
 		}
 		if (context.logger) {
-			context.logger('info', `start download ${context.url} to ${context.file}`);
+			context.logger('info', `start download ${context.url} to ${context.file}`, this, this.context);
 		}
 		//初始化context
 		this.addChild(new InitContext());

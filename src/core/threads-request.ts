@@ -38,6 +38,7 @@ export default class extends Action {
 			}
 		}
 		//流式传输
+		let rp = this.getRP();
 		{
 			this.lnMap.data = (chunk: any) => {
 				if (!this.isPending()) return;
@@ -57,14 +58,14 @@ export default class extends Action {
 					writeMeta(context);
 					//
 				} catch (err) {
-					this.getRP().reject(err);
+					rp.reject(err);
 				}
 			};
 			this.lnMap.error = (err: Error) => {
-				this.getRP().reject(err);
+				rp.reject(err);
 			};
 			this.lnMap.end = () => {
-				this.getRP().resolve();
+				rp.resolve();
 			};
 			for (let k in this.lnMap) {
 				this.response.data.on(k, this.lnMap[k]);
@@ -72,12 +73,10 @@ export default class extends Action {
 		}
 		//侦听
 		let err: any;
-		{
-			try {
-				await this.getRP().p;
-			} catch (e) {
-				err = e;
-			}
+		try {
+			await rp.p;
+		} catch (e) {
+			err = e;
 		}
 		//断开连接
 		{

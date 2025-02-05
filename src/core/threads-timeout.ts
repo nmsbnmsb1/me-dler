@@ -6,6 +6,7 @@ export default class extends Action {
 	private timer: any;
 
 	protected async doStart(context: DLContext) {
+		let rp = this.getRP();
 		let { metaData } = context;
 		let totalBytesDownloaded = 0;
 		//
@@ -18,11 +19,11 @@ export default class extends Action {
 				//
 			} else {
 				//context.timeout 没有收到数据
-				this.getRP().reject(e('req_time_out', context.timeout));
+				rp.reject(e('req_time_out', context.timeout));
 			}
 		}, context.timeout);
 		//
-		await this.getRP().p;
+		await rp.p;
 	}
 
 	protected async doStop() {

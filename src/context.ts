@@ -1,5 +1,7 @@
 import type { ActionContext } from 'me-actions';
 
+import { Downloader } from './downloader';
+
 export interface DLThread {
 	start: number;
 	end: number;
@@ -25,7 +27,7 @@ export interface DLMetaData {
 
 export interface DLContext extends ActionContext {
 	//预载
-	preloader?: (context: DLContext) => Promise<any>;
+	preloader?: (caller: Downloader, context: DLContext) => Promise<any>;
 	//下载文件的绝对路径
 	url?: string;
 	//保存文件的绝对路径

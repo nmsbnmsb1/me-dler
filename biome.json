@@ -31,7 +31,8 @@
 			},
 			"style": {
 				"useConst": "info",
-				"useNumberNamespace": "info"
+				"useNumberNamespace": "info",
+				"useImportType": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off",

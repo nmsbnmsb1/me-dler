@@ -8,10 +8,11 @@ export default class extends Action {
 	private thread: Action;
 	//
 	protected async doStart(context: DLContext) {
+		let rp = this.getRP();
 		//
 		this.timeout = new ThreadsTimeout().watch(() => {
 			if (this.timeout.isRejected()) {
-				this.getRP().reject(this.timeout.getError());
+				rp.reject(this.timeout.getError());
 			}
 		});
 		this.timeout.start(context);
@@ -30,14 +31,14 @@ export default class extends Action {
 		}
 		this.thread.watch(() => {
 			if (this.thread.isResolved()) {
-				this.getRP().resolve();
+				rp.resolve();
 			} else if (this.thread.isRejected()) {
-				this.getRP().reject(this.thread.getError());
+				rp.reject(this.thread.getError());
 			}
 		});
 		this.thread.start(context);
 		//
-		await this.getRP().p;
+		await rp.p;
 	}
 
 	protected async doStop(context: DLContext) {

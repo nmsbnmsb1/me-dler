@@ -1,4 +1,5 @@
 import type { ActionContext } from 'me-actions';
+import { Downloader } from './downloader';
 export interface DLThread {
     start: number;
     end: number;
@@ -18,7 +19,7 @@ export interface DLMetaData {
     err?: Error;
 }
 export interface DLContext extends ActionContext {
-    preloader?: (context: DLContext) => Promise<any>;
+    preloader?: (caller: Downloader, context: DLContext) => Promise<any>;
     url?: string;
     file?: string;
     mkdir?: boolean;
