@@ -27,11 +27,12 @@ export class Downloader extends RunOne {
 			await context.preloader(this, context);
 		}
 		//查看文件是否已下载
-		if (!context.url) throw e('no_url');
-		if (!context.file) throw e('no_file');
+		if (!context.url) throw e(context, 'no_url');
+		if (!context.file) throw e(context, 'no_file');
 		if (!context.overwrite && fs.existsSync(context.file)) {
 			return;
 		}
+		//
 		if (context.logger) {
 			context.logger('info', `start download ${context.url} to ${context.file}`, this, this.context);
 		}
@@ -55,12 +56,13 @@ export class Downloader extends RunOne {
 				}
 				//下载
 				this.addChild(new DataRequest());
+				this.addChild(new FileClose());
 			})
 		);
 		//关闭文件句柄
-		this.watch(() => {
-			return new FileClose().start(context);
-		});
+		// this.watch(() => {
+		// 	return new FileClose().start(context);
+		// });
 		//
 		return super.doStart(context);
 	}

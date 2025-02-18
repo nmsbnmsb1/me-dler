@@ -22,20 +22,17 @@ export default class extends Action {
 		let { metaData } = context;
 		let headers = context.headers ? JSON.parse(JSON.stringify(context.headers)) : {};
 		if (metaData.ddxc) headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
-		//
 		//创建链接
-		{
-			try {
-				this.response = await request({
-					method: context.method,
-					url: metaData.url,
-					headers,
-					timeout: context.timeout,
-					responseType: 'stream',
-				});
-			} catch (err) {
-				throw e('data_failed', err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
-			}
+		try {
+			this.response = await request(context, {
+				method: context.method,
+				url: metaData.url,
+				headers,
+				timeout: context.timeout,
+				responseType: 'stream',
+			});
+		} catch (err) {
+			throw e(context, 'data_failed', err.message, `${context.method.toUpperCase()}: ${metaData.url}`);
 		}
 		//流式传输
 		let rp = this.getRP();
@@ -58,11 +55,11 @@ export default class extends Action {
 					writeMeta(context);
 					//
 				} catch (err) {
-					rp.reject(err);
+					rp.reject(e(context, 'write_data_failed', this.thread.seq, metaData.dlFile));
 				}
 			};
 			this.lnMap.error = (err: Error) => {
-				rp.reject(err);
+				rp.reject(e(context, 'data_failed', err.message, `${context.method.toUpperCase()}: ${metaData.url}`));
 			};
 			this.lnMap.end = () => {
 				rp.resolve();
@@ -79,10 +76,8 @@ export default class extends Action {
 			err = e;
 		}
 		//断开连接
-		{
-			for (let k in this.lnMap) {
-				this.response?.data?.off(k, this.lnMap[k]);
-			}
+		for (let k in this.lnMap) {
+			this.response?.data?.off(k, this.lnMap[k]);
 		}
 		//
 		this.thread.done = err === undefined;

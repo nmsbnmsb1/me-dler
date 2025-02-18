@@ -24,7 +24,7 @@ export function writeMeta(context: DLContext) {
 		fs.writeSync(metaData.dlDescriptor, buffer, 0, buffer.length, writePosition);
 		//
 	} catch (err) {
-		throw e('write_meta_failed', metaData.dlFile);
+		throw e(context, 'write_meta_failed', metaData.dlFile);
 	}
 }
 

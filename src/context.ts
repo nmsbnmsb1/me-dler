@@ -3,6 +3,7 @@ import type { ActionContext } from 'me-actions';
 import { Downloader } from './downloader';
 
 export interface DLThread {
+	seq: number;
 	start: number;
 	end: number;
 	position: number;

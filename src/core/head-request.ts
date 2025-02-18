@@ -20,7 +20,7 @@ export default class extends Action {
 		let response: AxiosResponse;
 		let responseError: Error;
 		try {
-			response = await request({
+			response = await request(context, {
 				method: 'HEAD',
 				url: context.url,
 				headers: context.headers,
@@ -36,7 +36,7 @@ export default class extends Action {
 			//写入错误
 			// metaData.status = JSON.stringify({ method: 'HEAD', url: context.url, message: responseError.message }, undefined, 4);
 			// fs.writeFileSync(metaData.errFile, metaData.status, { mode: 0o777 });
-			throw e('data_failed', responseError.message, `HEAD: ${context.url}`);
+			throw e(context, 'data_failed', responseError.message, `HEAD: ${context.url}`);
 			//
 			// metaData.status = undefined;
 			// metaData.url = context.url;

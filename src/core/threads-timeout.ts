@@ -19,7 +19,7 @@ export default class extends Action {
 				//
 			} else {
 				//context.timeout 没有收到数据
-				rp.reject(e('req_time_out', context.timeout));
+				rp.reject(e(context, 'req_time_out', context.timeout));
 			}
 		}, context.timeout);
 		//

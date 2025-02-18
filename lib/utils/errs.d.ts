@@ -1,1 +1,2 @@
-export declare function e(code: string, ...cs: any): Error;
+import { DLContext } from '../context';
+export declare function e(context: DLContext, code: string, ...cs: any): Error;

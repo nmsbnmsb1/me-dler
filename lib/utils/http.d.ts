@@ -3,6 +3,7 @@ import { type AxiosResponse } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { DLContext } from 'src/context';
 export declare function getProxyAgent(proxy: string): {
     httpsAgent: https.Agent;
     httpAgent?: undefined;
@@ -13,7 +14,7 @@ export declare function getProxyAgent(proxy: string): {
     httpAgent: HttpProxyAgent<string>;
     httpsAgent: HttpsProxyAgent<string>;
 };
-export declare function request(options: {
+export declare function request(context: DLContext, options: {
     method?: string;
     url: string;
     headers?: any;

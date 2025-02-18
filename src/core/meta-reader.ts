@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
+import { e } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
@@ -35,7 +36,7 @@ export default class extends Action {
 				}
 			}
 		} catch (err) {
-			//
+			throw e(context, 'read_meta_failed', metaData.dlFile);
 		}
 	}
 }

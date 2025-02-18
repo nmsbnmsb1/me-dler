@@ -1,6 +1,6 @@
 {
 	"name": "me-dler",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"main": "lib/index.js",
 	"scripts": {
 		"format": "biome format",
@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^22.13.1",
+		"@types/node": "^22.13.4",
 		"typescript": "^5.7.3"
 	}
 }

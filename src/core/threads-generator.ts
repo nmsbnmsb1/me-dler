@@ -6,7 +6,7 @@ export default class extends Action {
 		let { metaData } = context;
 		//如果不支持断点续传
 		if (!metaData.ddxc) {
-			metaData.threads = [{ start: 0, end: 0, position: 0, done: false }];
+			metaData.threads = [{ seq: 0, start: 0, end: 0, position: 0, done: false }];
 		} else {
 			let s = context.range.split('-');
 			//计算线程数量
@@ -21,7 +21,7 @@ export default class extends Action {
 			let startRange = start;
 			let endRange = start + blockSize;
 			for (let i = 1; i <= total; i++) {
-				threads.push({ start: startRange, end: endRange, position: startRange, done: false });
+				threads.push({ seq: i - 1, start: startRange, end: endRange, position: startRange, done: false });
 				//
 				startRange = endRange + 1;
 				endRange = blockSize * (i + 1);
