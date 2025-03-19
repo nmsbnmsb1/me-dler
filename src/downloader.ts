@@ -21,21 +21,46 @@ export class Downloader extends RunOne {
 		this.context = context;
 	}
 
+	// protected override logErr() {
+	// 	super.logErr();
+	// 	if (this.context.writeErrFile === false || !this.context.metaData) return;
+	// 	//
+	// 	let { errFile } = this.context.metaData;
+	// 	let errorContent = {
+	// 		timestamp: new Date().toISOString(),
+	// 		context: this.context,
+	// 		error: { name: this.error.name, message: this.error.message, stack: this.error.stack },
+	// 	};
+	// 	try {
+	// 		fs.writeFileSync(errFile, JSON.stringify(errorContent, null, 2), 'utf-8');
+	// 		// if (this.context.logger) {
+	// 		// 	this.context.logger('error', `Download failed. Error details written to ${errFile}`, this, this.context);
+	// 		// }
+	// 	} catch (writeErr) {
+	// 		// if (this.context.logger) {
+	// 		// 	this.context.logger('error', `Failed to write error file: ${writeErr.message}`, this, this.context);
+	// 		// }
+	// 	}
+	// }
+
 	protected async doStart(context: DLContext) {
 		//如果有预载脚本，则预载
 		if (context.preloader) {
-			await context.preloader(this, context);
+			try {
+				context.logger?.('verbose', 'Preloader File', this, this.context);
+				await context.preloader(this, context);
+			} catch (err) {
+				throw e(context, 'preload_failed', err);
+			}
 		}
-		//查看文件是否已下载
 		if (!context.url) throw e(context, 'no_url');
 		if (!context.file) throw e(context, 'no_file');
 		if (!context.overwrite && fs.existsSync(context.file)) {
+			context.logger?.('verbose', `File exists ${context.file}`, this, this.context);
 			return;
 		}
-		//
-		if (context.logger) {
-			context.logger('info', `start download ${context.url} to ${context.file}`, this, this.context);
-		}
+		//开启下载进程
+		context.logger?.('verbose', `Start download ${context.url} to ${context.file}`, this, this.context);
 		//初始化context
 		this.addChild(new InitContext());
 		//准备要下载的文件;
@@ -47,6 +72,7 @@ export class Downloader extends RunOne {
 			new ActionForFunc(async () => {
 				//如果MetaData读取有错误
 				if (context.metaData.status) {
+					context.logger?.('debug', 'Recreate metaData as it has invalid status', this, this.context);
 					//3.1 获取资源情况
 					this.addChild(new HeadRequest());
 					//3.2 生成下载线程
@@ -56,14 +82,12 @@ export class Downloader extends RunOne {
 				}
 				//下载
 				this.addChild(new DataRequest());
-				this.addChild(new FileClose());
 			})
 		);
 		//关闭文件句柄
-		// this.watch(() => {
-		// 	return new FileClose().start(context);
-		// });
-		//
+		this.watch(() => {
+			return new FileClose().start(context);
+		}, 0);
 		return super.doStart(context);
 	}
 }

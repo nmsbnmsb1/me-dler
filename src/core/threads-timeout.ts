@@ -10,6 +10,7 @@ export default class extends Action {
 		let { metaData } = context;
 		let totalBytesDownloaded = 0;
 		//
+		context.logger?.('debug', `Checking timeout: ${context.timeout}`, this, this.context);
 		this.timer = setInterval(() => {
 			let bytesDownloaded = 0;
 			for (let thread of metaData.threads) bytesDownloaded += thread.position - thread.start;

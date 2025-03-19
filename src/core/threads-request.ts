@@ -24,6 +24,8 @@ export default class extends Action {
 		if (metaData.ddxc) headers.range = `bytes=${this.thread.position}-${this.thread.end}`;
 		//创建链接
 		try {
+			context.logger?.('http', `${context.method.toUpperCase()}: ${metaData.url}`, this, this.context);
+			context.logger?.('debug', `Using Head: ${JSON.stringify(headers)}`, this, this.context);
 			this.response = await request(context, {
 				method: context.method,
 				url: metaData.url,

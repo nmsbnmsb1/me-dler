@@ -27,5 +27,8 @@ export class DLQueue extends RunQueue {
 		//
 		return false;
 	}
+	public static getRef() {
+		return DLQueue._ref;
+	}
 	public getDL = (context: DLContext) => new Downloader(context);
 }

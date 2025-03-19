@@ -13,6 +13,7 @@ export default class extends Action {
 			metaData.ddxc = false;
 			metaData.acceptRanges = true;
 			metaData.fileSize = 0;
+			context.logger?.('debug', `Skip Head Request: ${JSON.stringify(metaData)}`, this, this.context);
 			return;
 		}
 		//
@@ -20,6 +21,7 @@ export default class extends Action {
 		let response: AxiosResponse;
 		let responseError: Error;
 		try {
+			context.logger?.('http', `HEAD: ${context.url}`, this, this.context);
 			response = await request(context, {
 				method: 'HEAD',
 				url: context.url,
@@ -58,5 +60,6 @@ export default class extends Action {
 			metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
 			metaData.fileSize = fileSize;
 		}
+		context.logger?.('debug', `Created metadata: ${JSON.stringify(metaData)}`, this, this.context);
 	}
 }

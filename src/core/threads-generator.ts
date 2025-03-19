@@ -30,5 +30,6 @@ export default class extends Action {
 			//
 			metaData.threads = threads;
 		}
+		context.logger?.('debug', `Generate threads: ${JSON.stringify(metaData.threads)}`, this, this.context);
 	}
 }

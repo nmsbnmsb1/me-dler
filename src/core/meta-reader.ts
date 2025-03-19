@@ -13,6 +13,12 @@ export default class extends Action {
 		let stats = fs.fstatSync(metaData.dlDescriptor);
 		let actualSize = stats.size;
 		if (actualSize < context.metaSize) {
+			context.logger?.(
+				'debug',
+				`Metadata read failed: file size (${actualSize}) is smaller than required metadata size (${context.metaSize})`,
+				this,
+				this.context
+			);
 			return;
 		}
 		//
@@ -35,8 +41,10 @@ export default class extends Action {
 					metaData.threads[0].done = false;
 				}
 			}
+			context.logger?.('debug', `MetaData readed: ${JSON.stringify(metaData)}`, this, this.context);
 		} catch (err) {
-			throw e(context, 'read_meta_failed', metaData.dlFile);
+			//throw e(context, 'read_meta_failed', metaData.dlFile);
+			context.logger?.('error', `MetaData could not be readed on path: ${context.file}`, this, this.context);
 		}
 	}
 }

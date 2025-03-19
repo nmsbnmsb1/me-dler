@@ -1,6 +1,7 @@
 import { DLContext } from '../context';
 
 let codes: any = {
+	preload_failed: 'Preloader could not be processed. {0}',
 	no_url: 'context.url hasnot been set.',
 	no_file: 'context.file hasnot been set.',
 	file_failed: 'File handler could not be created on path: {0}',
