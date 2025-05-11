@@ -13,6 +13,8 @@ let codes: any = {
 	//
 	dl_not_completed: 'Download did not complete successfully.',
 	file_downloaded: 'File has been downloaded on path: {0}',
+	//
+	postload_failed: 'Postloader could not be processed. {0}',
 };
 
 export function e(context: DLContext, code: string, ...cs: any) {

@@ -35,7 +35,7 @@ export interface DLContext extends ActionContext {
 	file?: string;
 	//下载的控制细节
 	mkdir?: boolean; //default true
-	overwrite?: boolean; //default false
+	overwrite?: 'all' | 'dl'; //default 'dl'
 	writeErrFile?: boolean; //default true 写入错误文件
 	skipHeadRequest?: boolean; //default false 跳过head请求
 	//Proxy 代理
@@ -58,4 +58,6 @@ export interface DLContext extends ActionContext {
 	metaData?: DLMetaData;
 	//下载完成回报
 	hasDown?: boolean;
+	//预载
+	postloader?: (caller: Downloader, context: DLContext) => Promise<any>;
 }

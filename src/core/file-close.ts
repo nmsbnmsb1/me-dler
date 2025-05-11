@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
+import { fsPromisify } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
@@ -22,14 +23,19 @@ export default class extends Action {
 			if (!hasDown) {
 				context.hasDown = false;
 				//获取文件size
-				let size = fs.fstatSync(metaData.dlDescriptor).size;
+				let size = 0;
+				try {
+					size = (await fsPromisify(fs.fstat, metaData.dlDescriptor)).size;
+				} catch (e) {
+					context.errs.push(e);
+				}
 				//如果size和metaSize相同，相当于没有下载
 				try {
 					if (size <= context.metaSize) {
-						fs.closeSync(metaData.dlDescriptor);
-						fs.unlinkSync(metaData.dlFile);
+						await fsPromisify(fs.close, metaData.dlDescriptor);
+						await fsPromisify(fs.unlink, metaData.dlFile);
 					} else {
-						fs.closeSync(metaData.dlDescriptor);
+						await fsPromisify(fs.close, metaData.dlDescriptor);
 					}
 				} catch (e) {
 					context.errs.push(e);
@@ -38,8 +44,8 @@ export default class extends Action {
 			} else {
 				context.hasDown = true;
 				//
-				fs.ftruncateSync(metaData.dlDescriptor, metaData.fileSize);
-				fs.closeSync(metaData.dlDescriptor);
+				await fsPromisify(fs.ftruncate, metaData.dlDescriptor, metaData.fileSize);
+				await fsPromisify(fs.close, metaData.dlDescriptor);
 				//
 				// await new Promise((resolve) => setTimeout(resolve, 1000));
 				// fs.renameSync(metaData.dlFile, context.file);
@@ -47,7 +53,7 @@ export default class extends Action {
 				let e: any;
 				for (let i = 0; i < maxRetries; i++) {
 					try {
-						fs.renameSync(metaData.dlFile, context.file);
+						await fsPromisify(fs.rename, metaData.dlFile, context.file);
 						context.logger?.('verbose', `File has been saved to ${context.file}`, this, this.context);
 						return;
 					} catch (err) {
@@ -70,7 +76,9 @@ export default class extends Action {
 			for (let err of context.errs) errs.push([...err.stack.split('\n')]);
 			//
 			try {
-				fs.writeFileSync(metaData.errFile, JSON.stringify({ url: context.url, errs }, undefined, 4), { mode: 0o777 });
+				await fsPromisify(fs.writeFile, metaData.errFile, JSON.stringify({ url: context.url, errs }, undefined, 4), {
+					mode: 0o777,
+				});
 			} catch (e) {
 				context.logger?.('error', `Couldnot write err file at ${metaData.errFile}`, this, this.context);
 			}

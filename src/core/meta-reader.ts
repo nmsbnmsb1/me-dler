@@ -3,14 +3,21 @@ import fs from 'node:fs';
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
-import { e } from '../utils';
+import { fsPromisify } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
 		let { metaData } = context;
 		metaData.status = 'invalid';
 		//
-		let stats = fs.fstatSync(metaData.dlDescriptor);
+		let stats: any;
+		try {
+			stats = await fsPromisify(fs.fstat, metaData.dlDescriptor);
+		} catch (e) {
+			context.logger?.('error', e.stack);
+			throw e;
+		}
+		//
 		let actualSize = stats.size;
 		if (actualSize < context.metaSize) {
 			context.logger?.(
@@ -25,7 +32,7 @@ export default class extends Action {
 		try {
 			let readPostion = actualSize - context.metaSize;
 			let buffer = Buffer.alloc(context.metaSize);
-			fs.readSync(metaData.dlDescriptor, buffer, 0, buffer.length, readPostion);
+			await fsPromisify(fs.read, metaData.dlDescriptor, buffer, 0, buffer.length, readPostion);
 			let meta = JSON.parse(buffer.toString());
 			//
 			metaData.status = undefined;

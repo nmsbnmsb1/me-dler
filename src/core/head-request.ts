@@ -7,13 +7,17 @@ export default class extends Action {
 	protected async doStart(context: DLContext) {
 		let { metaData } = context;
 		//
-		if (context.skipHeadRequest) {
+		if (context.skipHeadRequest || context.threads <= 1) {
 			metaData.status = undefined;
 			metaData.url = context.url;
 			metaData.ddxc = false;
 			metaData.acceptRanges = true;
 			metaData.fileSize = 0;
-			context.logger?.('debug', `Skip Head Request: ${JSON.stringify(metaData)}`, this, this.context);
+			if (context.skipHeadRequest) {
+				context.logger?.('debug', `Skip Head Request: ${JSON.stringify(metaData)}`, this, this.context);
+			} else {
+				context.logger?.('debug', `Download Thread = 1: ${JSON.stringify(metaData)}`, this, this.context);
+			}
 			return;
 		}
 		//

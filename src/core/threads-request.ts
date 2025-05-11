@@ -4,7 +4,7 @@ import type { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
 
 import type { DLContext, DLThread } from '../context';
-import { e, request } from '../utils';
+import { e, fsPromisify, request } from '../utils';
 import { writeMeta } from './meta-writer';
 
 export default class extends Action {
@@ -39,7 +39,7 @@ export default class extends Action {
 		//流式传输
 		let rp = this.getRP();
 		{
-			this.lnMap.data = (chunk: any) => {
+			this.lnMap.data = async (chunk: any) => {
 				if (!this.isPending()) return;
 				//
 				try {

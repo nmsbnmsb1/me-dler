@@ -7,7 +7,6 @@ export default class extends Action {
 		if (!context.errs) context.errs = [];
 		//
 		if (context.mkdir === undefined) context.mkdir = true;
-		if (context.overwrite === undefined) context.overwrite = false;
 		if (context.writeErrFile === undefined) context.writeErrFile = true;
 		if (context.skipHeadRequest === undefined) context.skipHeadRequest = false;
 		//

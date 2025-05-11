@@ -24,7 +24,7 @@ export interface DLContext extends ActionContext {
     url?: string;
     file?: string;
     mkdir?: boolean;
-    overwrite?: boolean;
+    overwrite?: 'all' | 'dl';
     writeErrFile?: boolean;
     skipHeadRequest?: boolean;
     proxy?: string;
@@ -39,4 +39,5 @@ export interface DLContext extends ActionContext {
     metaSize?: number;
     metaData?: DLMetaData;
     hasDown?: boolean;
+    postloader?: (caller: Downloader, context: DLContext) => Promise<any>;
 }

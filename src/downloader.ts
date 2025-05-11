@@ -1,8 +1,9 @@
 import fs from 'node:fs';
+
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
 
 import type { DLContext } from './context';
-import { e } from './utils';
+import { e, fsPromisify } from './utils';
 
 import DataRequest from './core/data-request';
 import FileClose from './core/file-close';
@@ -55,7 +56,7 @@ export class Downloader extends RunOne {
 		}
 		if (!context.url) throw e(context, 'no_url');
 		if (!context.file) throw e(context, 'no_file');
-		if (!context.overwrite && fs.existsSync(context.file)) {
+		if ((await fsPromisify(fs.exists, context.file)) && context.overwrite !== 'all') {
 			context.logger?.('verbose', `File exists ${context.file}`, this, this.context);
 			return;
 		}
@@ -85,8 +86,18 @@ export class Downloader extends RunOne {
 			})
 		);
 		//关闭文件句柄
-		this.watch(() => {
-			return new FileClose().start(context);
+		this.watch(async () => {
+			//保存文件
+			await new FileClose().start(context);
+			//如果有后处理脚本，调用
+			if (this.isResolved() && context.postloader) {
+				try {
+					context.logger?.('verbose', 'Postloader File', this, this.context);
+					await context.postloader(this, context);
+				} catch (err) {
+					context.logger?.('error', `PostLoader Error: ${err}`);
+				}
+			}
 		}, 0);
 		return super.doStart(context);
 	}

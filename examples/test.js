@@ -3,16 +3,19 @@ const { Downloader } = require('../lib');
 
 (async () => {
 	let context = {
-		url: 'xxx',
-		file: path.resolve('./downloads/aaa.txt'),
-		overwrite: true,
-		threads: 1,
+		url: 'https://pbs.twimg.com/media/GqiNmgAXEAATpyX?format=jpg&name=large',
+		file: path.resolve('./downloads/010_48_11-1.jpg'),
+		overwrite : 'all',
 		headers: {
 			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 		},
+		logger: (level, msg) => {
+			console.log('-----------------')
+			console.log( msg)
+		}
 	};
 
-	let dl = await new Downloader(context).startAsync();
+	let dl = await new Downloader(context).start();
 	//
 	// let fd = fs.openSync(`${context.dl.file}.mtd`, 'r+');
 	// let stats = fs.fstatSync(fd);
