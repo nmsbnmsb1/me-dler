@@ -1,3 +1,4 @@
+import fsPromises from 'node:fs/promises';
 import type { ActionContext } from 'me-actions';
 
 import { Downloader } from './downloader';
@@ -13,7 +14,7 @@ export interface DLThread {
 export interface DLMetaData {
 	//${filename}.dl
 	dlFile: string;
-	dlDescriptor: number;
+	dlHandle: fsPromises.FileHandle;
 	errFile: string;
 	//
 	status: string;

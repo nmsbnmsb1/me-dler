@@ -3,7 +3,7 @@ import { type AxiosResponse } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { DLContext } from 'src/context';
+import { DLContext } from '../context';
 export declare function getProxyAgent(proxy: string): {
     httpsAgent: https.Agent;
     httpAgent?: undefined;

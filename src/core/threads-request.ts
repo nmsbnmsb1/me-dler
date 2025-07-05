@@ -1,10 +1,8 @@
-import fs from 'node:fs';
-
 import type { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
 
 import type { DLContext, DLThread } from '../context';
-import { e, fsPromisify, request } from '../utils';
+import { e, request } from '../utils';
 import { writeMeta } from './meta-writer';
 
 export default class extends Action {
@@ -43,7 +41,8 @@ export default class extends Action {
 				if (!this.isPending()) return;
 				//
 				try {
-					fs.writeSync(metaData.dlDescriptor, chunk, 0, chunk.length, this.thread.position);
+					let currentPosition = this.thread.position;
+					//
 					this.thread.position += chunk.length;
 					//如果不支持断点续传
 					if (!metaData.ddxc) {
@@ -54,7 +53,8 @@ export default class extends Action {
 							this.thread.position = this.thread.end;
 						}
 					}
-					writeMeta(context);
+					//fs.writeSync(metaData.dlHandle.fd, chunk, 0, chunk.length, currentPosition);
+					await metaData.dlHandle.write(chunk, 0, chunk.length, currentPosition);
 					//
 				} catch (err) {
 					rp.reject(e(context, 'write_data_failed', this.thread.seq, metaData.dlFile));
@@ -83,7 +83,7 @@ export default class extends Action {
 		}
 		//
 		this.thread.done = err === undefined;
-		writeMeta(context);
+		await writeMeta(context);
 		if (err) throw err;
 	}
 

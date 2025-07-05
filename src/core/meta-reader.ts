@@ -1,9 +1,6 @@
-import fs from 'node:fs';
-
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
-import { fsPromisify } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
@@ -12,17 +9,16 @@ export default class extends Action {
 		//
 		let stats: any;
 		try {
-			stats = await fsPromisify(fs.fstat, metaData.dlDescriptor);
+			stats = await metaData.dlHandle.stat();
 		} catch (e) {
 			context.logger?.('error', e.stack);
 			throw e;
 		}
 		//
-		let actualSize = stats.size;
-		if (actualSize < context.metaSize) {
+		if (stats.size < context.metaSize) {
 			context.logger?.(
 				'debug',
-				`Metadata read failed: file size (${actualSize}) is smaller than required metadata size (${context.metaSize})`,
+				`Metadata read failed: file size (${stats.size}) is smaller than required metadata size (${context.metaSize})`,
 				this,
 				this.context
 			);
@@ -30,9 +26,9 @@ export default class extends Action {
 		}
 		//
 		try {
-			let readPostion = actualSize - context.metaSize;
+			let readPostion = stats.size - context.metaSize;
 			let buffer = Buffer.alloc(context.metaSize);
-			await fsPromisify(fs.read, metaData.dlDescriptor, buffer, 0, buffer.length, readPostion);
+			await metaData.dlHandle.read(buffer, 0, buffer.length, readPostion);
 			let meta = JSON.parse(buffer.toString());
 			//
 			metaData.status = undefined;
@@ -43,6 +39,7 @@ export default class extends Action {
 			//如果不支持断点续传,重置参数
 			if (!meta.ddxc) {
 				metaData.fileSize = 0;
+				if (metaData.threads?.length > 1) metaData.threads.length = 1;
 				if (metaData.threads?.[0]) {
 					metaData.threads[0].start = metaData.threads[0].end = metaData.threads[0].position = 0;
 					metaData.threads[0].done = false;

@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { Action } from 'me-actions';
+
 import type { DLContext } from '../context';
 import { e, request } from '../utils';
 
@@ -64,6 +65,11 @@ export default class extends Action {
 			metaData.acceptRanges = response.headers['accept-ranges'] === 'bytes';
 			metaData.fileSize = fileSize;
 		}
-		context.logger?.('debug', `Created metadata: ${JSON.stringify(metaData)}`, this, this.context);
+		context.logger?.(
+			'debug',
+			`Created metadata: ${JSON.stringify({ ...metaData, dlHandle: undefined })}`,
+			this,
+			this.context
+		);
 	}
 }

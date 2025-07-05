@@ -1,9 +1,8 @@
-import fs from 'node:fs';
-
+import fsPromises from 'node:fs/promises';
 import { ActionForFunc, ErrHandler, RunOne } from 'me-actions';
 
 import type { DLContext } from './context';
-import { e, fsPromisify } from './utils';
+import { e, isExists } from './utils';
 
 import DataRequest from './core/data-request';
 import FileClose from './core/file-close';
@@ -56,9 +55,14 @@ export class Downloader extends RunOne {
 		}
 		if (!context.url) throw e(context, 'no_url');
 		if (!context.file) throw e(context, 'no_file');
-		if ((await fsPromisify(fs.exists, context.file)) && context.overwrite !== 'all') {
-			context.logger?.('verbose', `File exists ${context.file}`, this, this.context);
-			return;
+		if (await isExists(context.file)) {
+			if (context.overwrite !== 'all') {
+				context.logger?.('warn', `File exists ${context.file}`, this, this.context);
+				return;
+			}
+			//
+			context.logger?.('debug', `Delete file at ${context.file} as overwrite setted.`, this, this.context);
+			await fsPromises.rm(context.file);
 		}
 		//开启下载进程
 		context.logger?.('verbose', `Start download ${context.url} to ${context.file}`, this, this.context);
@@ -68,6 +72,7 @@ export class Downloader extends RunOne {
 		this.addChild(new FileOpen());
 		//尝试读取MetaData
 		this.addChild(new MetaReader());
+
 		//如果MetaData无法读取或者读取错误，则重新获取MetaData
 		this.addChild(
 			new ActionForFunc(async () => {

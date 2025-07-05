@@ -1,11 +1,9 @@
-import fs from 'node:fs';
-
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
 import { e } from '../utils';
 
-export function writeMeta(context: DLContext) {
+export async function writeMeta(context: DLContext) {
 	let { metaData } = context;
 	//
 	try {
@@ -21,8 +19,7 @@ export function writeMeta(context: DLContext) {
 		let dataString = JSON.stringify(meta);
 		buffer.write(dataString);
 		let writePosition = metaData.fileSize;
-		fs.writeSync(metaData.dlDescriptor, buffer, 0, buffer.length, writePosition);
-		//
+		await metaData.dlHandle.write(buffer, 0, buffer.length, writePosition);
 	} catch (err) {
 		throw e(context, 'write_meta_failed', metaData.dlFile);
 	}

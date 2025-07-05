@@ -1,27 +1,19 @@
-import fs from 'node:fs';
+import fsPromises from 'node:fs/promises';
 
 export * from './errs';
 export * from './http';
 
-const fnMap = new Map();
-export const fsPromisify = (fn: any, ...args: any) => {
-	let pfn = fnMap.get(fn);
-	if (!pfn) {
-		pfn = (...args: any) => {
-			return new Promise((resolve, reject) => {
-				fn.apply(fs, [
-					...args,
-					(err: any, res: any) => {
-						if (err === true) {
-							resolve(true);
-						} else {
-							!err ? resolve(res) : reject(err);
-						}
-					},
-				]);
-			});
-		};
-		fnMap.set(fn, pfn);
+export async function getFileType(p: string): Promise<'not-exist' | 'file' | 'directory'> {
+	try {
+		const stats = await fsPromises.lstat(p);
+		return stats.isDirectory() ? 'directory' : 'file';
+	} catch (err) {
+		if (err.code === 'ENOENT') return 'not-exist';
+		throw err;
 	}
-	return pfn(...args);
-};
+}
+export async function isExists(p: string) {
+	let fileType = await getFileType(p);
+	if (fileType === 'not-exist') return false;
+	return true;
+}

@@ -1,14 +1,13 @@
-import fs from 'node:fs';
+import fsPromises from 'node:fs/promises';
 
 import { Action } from 'me-actions';
 
 import type { DLContext } from '../context';
-import { fsPromisify } from '../utils';
 
 export default class extends Action {
 	protected async doStart(context: DLContext) {
 		let { metaData } = context;
-		if (metaData.dlDescriptor) {
+		if (metaData.dlHandle) {
 			let hasDown = true;
 			if (!metaData.threads || metaData.threads.length <= 0) {
 				hasDown = false;
@@ -23,20 +22,21 @@ export default class extends Action {
 			if (!hasDown) {
 				context.hasDown = false;
 				//获取文件size
-				let size = 0;
-				try {
-					size = (await fsPromisify(fs.fstat, metaData.dlDescriptor)).size;
-				} catch (e) {
-					context.errs.push(e);
-				}
+				// let size = 0;
+				// try {
+				// 	size = (await metaData.dlHandle.stat()).size;
+				// } catch (e) {
+				// 	context.errs.push(e);
+				// }
 				//如果size和metaSize相同，相当于没有下载
 				try {
-					if (size <= context.metaSize) {
-						await fsPromisify(fs.close, metaData.dlDescriptor);
-						await fsPromisify(fs.unlink, metaData.dlFile);
-					} else {
-						await fsPromisify(fs.close, metaData.dlDescriptor);
-					}
+					// if (size <= context.metaSize) {
+					// 	await metaData.dlHandle.close();
+					// 	await fsPromises.rm(metaData.dlFile);
+					// } else {
+					// 	await metaData.dlHandle.close();
+					// }
+					await metaData.dlHandle.close();
 				} catch (e) {
 					context.errs.push(e);
 				}
@@ -44,30 +44,32 @@ export default class extends Action {
 			} else {
 				context.hasDown = true;
 				//
-				await fsPromisify(fs.ftruncate, metaData.dlDescriptor, metaData.fileSize);
-				await fsPromisify(fs.close, metaData.dlDescriptor);
+				await metaData.dlHandle.truncate(metaData.fileSize);
+				await metaData.dlHandle.close();
 				//
 				// await new Promise((resolve) => setTimeout(resolve, 1000));
 				// fs.renameSync(metaData.dlFile, context.file);
-				let maxRetries = 3;
-				let e: any;
-				for (let i = 0; i < maxRetries; i++) {
-					try {
-						await fsPromisify(fs.rename, metaData.dlFile, context.file);
-						context.logger?.('verbose', `File has been saved to ${context.file}`, this, this.context);
-						return;
-					} catch (err) {
-						if (i < maxRetries - 1) {
-							await new Promise((resolve) => setTimeout(resolve, 1000));
-						} else {
-							e = err;
-							break;
-						}
-					}
-				}
-				if (e) {
-					context.errs.push(e);
-				}
+				//
+				// let maxRetries = 3;
+				// let e: any;
+				// for (let i = 0; i < maxRetries; i++) {
+				// 	try {
+				// 		await fsPromises.rename(metaData.dlFile, context.file);
+				// 		context.logger?.('verbose', `File has been saved to ${context.file}`, this, this.context);
+				// 		return;
+				// 	} catch (err) {
+				// 		if (i < maxRetries - 1) {
+				// 			await new Promise((resolve) => setTimeout(resolve, 1000));
+				// 		} else {
+				// 			e = err;
+				// 			break;
+				// 		}
+				// 	}
+				// }
+				// if (e) {
+				// 	context.errs.push(e);
+				// }
+				await fsPromises.rename(metaData.dlFile, context.file);
 			}
 		}
 		//如果有任何错误
@@ -76,7 +78,7 @@ export default class extends Action {
 			for (let err of context.errs) errs.push([...err.stack.split('\n')]);
 			//
 			try {
-				await fsPromisify(fs.writeFile, metaData.errFile, JSON.stringify({ url: context.url, errs }, undefined, 4), {
+				await fsPromises.writeFile(metaData.errFile, JSON.stringify({ url: context.url, errs }, undefined, 4), {
 					mode: 0o777,
 				});
 			} catch (e) {
