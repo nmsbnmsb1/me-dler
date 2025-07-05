@@ -10,10 +10,7 @@
 	},
 	"dependencies": {
 		"me-actions": "github:nmsbnmsb1/me-actions.git",
-		"axios": "^1.10.0",
-		"http-proxy-agent": "^7.0.2",
-		"https-proxy-agent": "^7.0.6",
-		"socks-proxy-agent": "^8.0.5"
+		"axios": "^1.10.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",

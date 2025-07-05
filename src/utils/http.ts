@@ -2,9 +2,9 @@ import http from 'node:http';
 import https from 'node:https';
 
 import axios, { type AxiosResponse } from 'axios';
-import { HttpProxyAgent } from 'http-proxy-agent';
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import { SocksProxyAgent } from 'socks-proxy-agent';
+// import { HttpProxyAgent } from 'http-proxy-agent';
+// import { HttpsProxyAgent } from 'https-proxy-agent';
+// import { SocksProxyAgent } from 'socks-proxy-agent';
 
 import { DLContext } from '../context';
 import { e } from './errs';
@@ -12,16 +12,17 @@ import { e } from './errs';
 http.globalAgent.maxSockets = https.globalAgent.maxSockets = 200;
 
 export function getProxyAgent(proxy: string) {
-	if (!proxy) {
-		return { httpsAgent: new https.Agent({ rejectUnauthorized: false }) };
-	}
-	//
-	//let options = { ...url.parse(proxy), agentOptions: { keepAlive: true, rejectUnauthorized: false } };
-	let options = { keepAlive: true, rejectUnauthorized: false };
-	if (proxy.startsWith('socks')) {
-		return { httpAgent: new SocksProxyAgent(proxy, options), httpsAgent: new SocksProxyAgent(proxy, options) };
-	}
-	return { httpAgent: new HttpProxyAgent(proxy, options), httpsAgent: new HttpsProxyAgent(proxy, options) };
+	return { httpsAgent: new https.Agent({ rejectUnauthorized: false }) };
+	// if (!proxy) {
+	// 	return { httpsAgent: new https.Agent({ rejectUnauthorized: false }) };
+	// }
+	// //
+	// //let options = { ...url.parse(proxy), agentOptions: { keepAlive: true, rejectUnauthorized: false } };
+	// let options = { keepAlive: true, rejectUnauthorized: false };
+	// if (proxy.startsWith('socks')) {
+	// 	return { httpAgent: new SocksProxyAgent(proxy, options), httpsAgent: new SocksProxyAgent(proxy, options) };
+	// }
+	// return { httpAgent: new HttpProxyAgent(proxy, options), httpsAgent: new HttpsProxyAgent(proxy, options) };
 	// return {
 	// 	httpAgent: new http.Agent({ keepAlive: false }),
 	// 	httpsAgent: new https.Agent({ keepAlive: false, rejectUnauthorized: false }),
